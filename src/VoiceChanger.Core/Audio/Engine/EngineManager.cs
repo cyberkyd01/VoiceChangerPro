@@ -489,11 +489,12 @@ public sealed class EngineManager : IDisposable
             if (e.Config.MonitorEnabled && !e.MonitorActive) e.SetMonitor(ResolveMonitorOutput(), true);
         }
 
-        if (previousCable != ActiveCable?.RenderInput.Id)
-        {
-            if (ActiveCable == null) Notify("Virtual cable missing", "The virtual audio cable is no longer available. Other apps will not receive your processed voice.", true);
-            ApplyDefaultMicrophonePolicy();
-        }
+        if (previousCable != ActiveCable?.RenderInput.Id && ActiveCable == null)
+            Notify("Virtual cable missing", "The virtual audio cable is no longer available. Other apps will not receive your processed voice.", true);
+        // Windows re-points the default microphone at newly connected headsets; re-assert the cable
+        // every time devices change so apps that follow the "Default" device keep the processed voice.
+        // (No-op when the cable is already the default.)
+        ApplyDefaultMicrophonePolicy();
         ReassignBackgroundIfNeeded();
         _settings.SaveSoon();
         EnginesChanged?.Invoke();
