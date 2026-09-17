@@ -1,0 +1,706 @@
+<ui:FluentWindow x:Class="VoiceChanger.App.MainWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:ctl="clr-namespace:VoiceChanger.App.Controls"
+                 xmlns:vm="clr-namespace:VoiceChanger.App.ViewModels"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 mc:Ignorable="d"
+                 d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+                 Title="Voice Changer Pro"
+                 Width="1280" Height="780" MinWidth="1000" MinHeight="600"
+                 WindowStartupLocation="CenterScreen"
+                 ExtendsContentIntoTitleBar="True"
+                 WindowBackdropType="Mica"
+                 WindowCornerPreference="Round">
+    <Window.Resources>
+        <!-- Preset card -->
+        <DataTemplate x:Key="PresetCardTemplate" DataType="{x:Type vm:PresetItemViewModel}">
+            <Border Width="200" Height="150" Margin="0,0,8,8" CornerRadius="10" Padding="12,10,12,8"
+                    Background="{StaticResource CardBrush}" BorderThickness="1" Cursor="Hand"
+                    Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsApplied}" Value="True">
+                                <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                <Setter Property="Background" Value="#232B45" />
+                            </DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="#4C5A99" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Border.InputBindings>
+                    <MouseBinding MouseAction="LeftDoubleClick"
+                                  Command="{Binding DataContext.ApplyPresetCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                  CommandParameter="{Binding}" />
+                </Border.InputBindings>
+                <Border.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Apply to selected microphone" Command="{Binding PlacementTarget.Tag.ApplyPresetCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}" />
+                        <MenuItem Header="Apply to all microphones" Command="{Binding PlacementTarget.Tag.ApplyPresetToAllCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}" />
+                        <Separator />
+                        <MenuItem Header="Toggle favorite" Command="{Binding PlacementTarget.Tag.ToggleFavoriteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}" />
+                        <MenuItem Header="Duplicate to My Presets" Command="{Binding PlacementTarget.Tag.DuplicatePresetCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}" />
+                        <MenuItem Header="Rename / edit details…" Command="{Binding PlacementTarget.Tag.RenamePresetCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}" Visibility="{Binding IsBuiltIn, Converter={StaticResource InverseBoolToVis}}" />
+                        <MenuItem Header="Export…" Command="{Binding PlacementTarget.Tag.ExportPresetCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}" />
+                        <MenuItem Header="Delete" Command="{Binding PlacementTarget.Tag.DeletePresetCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}" Visibility="{Binding IsBuiltIn, Converter={StaticResource InverseBoolToVis}}" />
+                    </ContextMenu>
+                </Border.ContextMenu>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Icon}" FontSize="20" VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="SemiBold" FontSize="13.5" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}" />
+                        <Button Grid.Column="2" Padding="4" Background="Transparent" BorderThickness="0" VerticalAlignment="Center"
+                                Command="{Binding DataContext.ToggleFavoriteCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}" ToolTip="Favorite">
+                            <ui:SymbolIcon FontSize="16">
+                                <ui:SymbolIcon.Style>
+                                    <Style TargetType="ui:SymbolIcon">
+                                        <Setter Property="Symbol" Value="StarOff24" />
+                                        <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsFavorite}" Value="True">
+                                                <Setter Property="Symbol" Value="Star24" />
+                                                <Setter Property="Foreground" Value="#F5C523" />
+                                                <Setter Property="Filled" Value="True" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:SymbolIcon.Style>
+                            </ui:SymbolIcon>
+                        </Button>
+                    </Grid>
+                    <TextBlock Grid.Row="1" Text="{Binding Description}" Style="{StaticResource Muted}" Margin="0,6,0,0" TextTrimming="CharacterEllipsis" MaxHeight="48" LineHeight="16" />
+                    <TextBlock Grid.Row="2" Text="{Binding Summary}" FontSize="10.5" Foreground="#7D88B8" Margin="0,4,0,6" TextTrimming="CharacterEllipsis" />
+                    <StackPanel Grid.Row="3" Orientation="Horizontal">
+                        <ui:Button Content="Apply" Appearance="Primary" Padding="10,3" FontSize="12"
+                                   Command="{Binding DataContext.ApplyPresetCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                   CommandParameter="{Binding}" />
+                        <ui:Button Content="All mics" Padding="10,3" FontSize="12" Margin="6,0,0,0"
+                                   ToolTip="Apply this preset to every microphone"
+                                   Command="{Binding DataContext.ApplyPresetToAllCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                   CommandParameter="{Binding}" />
+                        <TextBlock Text="built-in" FontSize="10" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Margin="10,0,0,0"
+                                   Visibility="{Binding IsBuiltIn, Converter={StaticResource BoolToVis}}" />
+                        <TextBlock Text="custom" FontSize="10" Foreground="#3DD68C" VerticalAlignment="Center" Margin="10,0,0,0"
+                                   Visibility="{Binding IsBuiltIn, Converter={StaticResource InverseBoolToVis}}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- Microphone list item -->
+        <DataTemplate x:Key="MicrophoneTemplate" DataType="{x:Type vm:MicrophoneItemViewModel}">
+            <Grid Margin="2,4,2,4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Ellipse Width="9" Height="9" Margin="0,0,8,0" VerticalAlignment="Center" Fill="{Binding State, Converter={StaticResource StateBrush}}" />
+                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13" TextTrimming="CharacterEllipsis" MaxWidth="215" ToolTip="{Binding Name}" />
+                </StackPanel>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="17,2,0,0">
+                    <TextBlock Text="{Binding StateText}" Style="{StaticResource Muted}" />
+                    <TextBlock Text=" · " Style="{StaticResource Muted}" />
+                    <TextBlock Text="{Binding PresetName}" Style="{StaticResource Muted}" Foreground="#9FA8DA" TextTrimming="CharacterEllipsis" MaxWidth="130" />
+                </StackPanel>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="14,6,0,0">
+                    <ui:ToggleSwitch IsChecked="{Binding Active, Mode=TwoWay}" Content="Active" FontSize="12" ToolTip="Capture this microphone and route it to the virtual cable" />
+                    <ui:ToggleSwitch IsChecked="{Binding EffectEnabled, Mode=TwoWay}" Content="Effect" FontSize="12" Margin="14,0,0,0" ToolTip="Apply the voice effect (off = pass-through)" />
+                </StackPanel>
+                <TextBlock Grid.Row="3" Text="{Binding RouteText}" FontSize="10.5" Foreground="{StaticResource MutedBrush}" Margin="17,4,0,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding RouteText}" />
+                <TextBlock Grid.Row="3" Text="{Binding LastError}" FontSize="10.5" Foreground="{StaticResource DangerBrush}" Margin="17,4,0,0" TextWrapping="Wrap"
+                           Visibility="{Binding LastError, Converter={StaticResource NullToCollapsed}}" />
+            </Grid>
+        </DataTemplate>
+
+        <Style x:Key="SectionHeaderText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13.5" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="ExpanderStyle" TargetType="ui:CardExpander">
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="ContentPadding" Value="12,6,12,10" />
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Grid.Row="0" Title="Voice Changer Pro" ShowMaximize="True" ShowMinimize="True">
+            <ui:TitleBar.Icon>
+                <ui:ImageIcon Source="pack://application:,,,/Assets/app-256.png" />
+            </ui:TitleBar.Icon>
+        </ui:TitleBar>
+
+        <!-- ───────── Toolbar ───────── -->
+        <Grid Grid.Row="1" Margin="16,4,16,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Border CornerRadius="8" Padding="12,6" BorderThickness="1" BorderBrush="{StaticResource CardBorderBrush}" Background="{StaticResource CardBrush}">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="Power24" FontSize="18" Margin="0,0,8,0" VerticalAlignment="Center">
+                            <ui:SymbolIcon.Style>
+                                <Style TargetType="ui:SymbolIcon">
+                                    <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding MasterEnabled}" Value="True">
+                                            <Setter Property="Foreground" Value="{StaticResource SuccessBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:SymbolIcon.Style>
+                        </ui:SymbolIcon>
+                        <ui:ToggleSwitch IsChecked="{Binding MasterEnabled, Mode=TwoWay}" Content="Voice effects" FontWeight="SemiBold"
+                                         ToolTip="Master switch. Off = every microphone passes through unprocessed (apps keep working)." />
+                    </StackPanel>
+                </Border>
+                <Border CornerRadius="8" Padding="12,6" Margin="10,0,0,0" BorderThickness="1" BorderBrush="{StaticResource CardBorderBrush}" Background="{StaticResource CardBrush}">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,8,0">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Fill" Value="{StaticResource DangerBrush}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CableOk}" Value="True">
+                                            <Setter Property="Fill" Value="{StaticResource SuccessBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock Text="{Binding CableStatus}" VerticalAlignment="Center" FontWeight="SemiBold" ToolTip="{Binding CableDetail}" />
+                        <ui:Button Content="Set as Windows default mic" Appearance="Primary" Margin="12,0,0,0" Padding="10,4" FontSize="12"
+                                   Command="{Binding SetDefaultMicrophoneCommand}" ToolTip="{Binding CableDetail}">
+                            <ui:Button.Style>
+                                <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding CableOk}" Value="True" />
+                                                <Condition Binding="{Binding DefaultMicIsCable}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:Button.Style>
+                        </ui:Button>
+                        <TextBlock Text="· default mic ✓" Foreground="{StaticResource SuccessBrush}" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12"
+                                   Visibility="{Binding DefaultMicIsCable, Converter={StaticResource BoolToVis}}" ToolTip="{Binding CableDetail}" />
+                        <ui:Button Content="Get VB-CABLE (free)" Appearance="Caution" Margin="12,0,0,0" Padding="10,4" FontSize="12"
+                                   Command="{Binding OpenCableDownloadCommand}" Visibility="{Binding CableOk, Converter={StaticResource InverseBoolToVis}}"
+                                   ToolTip="Opens vb-audio.com. Install VB-CABLE, reboot, then click Refresh." />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <ui:Button Icon="{ui:SymbolIcon ArrowSync24}" Content="Refresh" Command="{Binding RefreshDevicesCommand}" ToolTip="Re-scan audio devices" Margin="0,0,8,0" />
+                <ui:Button Icon="{ui:SymbolIcon Settings24}" Content="Settings" Command="{Binding OpenSettingsCommand}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- ───────── Notification ───────── -->
+        <ui:InfoBar Grid.Row="2" Margin="16,0,16,8" IsOpen="{Binding NotificationOpen, Mode=TwoWay}" Title="{Binding NotificationTitle}" Message="{Binding NotificationMessage}" IsClosable="True">
+            <ui:InfoBar.Style>
+                <Style TargetType="ui:InfoBar">
+                    <Setter Property="Severity" Value="Informational" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding NotificationIsWarning}" Value="True">
+                            <Setter Property="Severity" Value="Warning" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ui:InfoBar.Style>
+        </ui:InfoBar>
+
+        <!-- ───────── Body ───────── -->
+        <Grid Grid.Row="3" Margin="16,0,16,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="282" />
+                <ColumnDefinition Width="*" MinWidth="360" />
+                <ColumnDefinition Width="410" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: microphones, monitoring, test clip -->
+            <Grid Grid.Column="0" Margin="0,0,12,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" MinHeight="150" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+
+                <Border Grid.Row="0" Style="{StaticResource Panel}" Padding="12">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" Margin="0,0,0,8">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="Mic24" FontSize="18" Margin="0,0,8,0" />
+                                <TextBlock Text="Microphones" Style="{StaticResource SectionHeaderText}" />
+                            </StackPanel>
+                            <TextBlock Text="{Binding Microphones.Count}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" />
+                        </Grid>
+                        <ListView Grid.Row="1" ItemsSource="{Binding Microphones}" SelectedItem="{Binding SelectedMicrophone, Mode=TwoWay}"
+                                  ItemTemplate="{StaticResource MicrophoneTemplate}" BorderThickness="0" Background="Transparent"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" />
+                        <TextBlock Grid.Row="1" Text="No microphone detected. Plug one in — it will appear here automatically." Style="{StaticResource Muted}" TextAlignment="Center" VerticalAlignment="Center" Margin="12"
+                                   Visibility="{Binding SelectedMicrophone, Converter={StaticResource NotNullToCollapsed}}" />
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,8,0,0">
+                            <ui:Button Content="Activate all" FontSize="12" Padding="10,4" Command="{Binding ActivateAllCommand}" ToolTip="Start processing every microphone" />
+                            <ui:Button Content="Copy settings to all" FontSize="12" Padding="10,4" Margin="8,0,0,0" Command="{Binding CopyToAllMicrophonesCommand}" ToolTip="Apply the selected microphone's current voice settings to all other microphones" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="1" Style="{StaticResource Panel}" Padding="12" Margin="0,10,0,0" DataContext="{Binding}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                            <ui:SymbolIcon Symbol="Headphones24" FontSize="18" Margin="0,0,8,0" />
+                            <TextBlock Text="Live monitoring" Style="{StaticResource SectionHeaderText}" />
+                        </StackPanel>
+                        <ui:ToggleSwitch Content="Hear myself (processed)" IsChecked="{Binding SelectedMicrophone.MonitorEnabled, Mode=TwoWay}" FontSize="12"
+                                         IsEnabled="{Binding SelectedMicrophone, Converter={StaticResource NotNullToBool}}"
+                                         ToolTip="Plays the processed voice on the selected output so you can tune in real time. Use headphones to avoid feedback." />
+                        <ComboBox ItemsSource="{Binding MonitorDevices}" SelectedItem="{Binding SelectedMonitorDevice, Mode=TwoWay}" DisplayMemberPath="Name" Margin="0,8,0,0" FontSize="12" ToolTip="Output device for monitoring (headphones recommended)" />
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Volume" Style="{StaticResource Muted}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                            <Slider Grid.Column="1" Minimum="0" Maximum="1.5" Value="{Binding SelectedMicrophone.MonitorVolume, Mode=TwoWay}" VerticalAlignment="Center" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Row="2" Style="{StaticResource Panel}" Padding="12" Margin="0,10,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                            <ui:SymbolIcon Symbol="Record24" FontSize="18" Margin="0,0,8,0" />
+                            <TextBlock Text="Test clip" Style="{StaticResource SectionHeaderText}" />
+                            <TextBlock Text="{Binding SelectedMicrophone.ClipText}" Style="{StaticResource Muted}" VerticalAlignment="Center" Margin="10,0,0,0" />
+                        </StackPanel>
+                        <TextBlock Text="Record 5 s, then loop it through the effect while you tweak." Style="{StaticResource Muted}" Margin="0,0,0,6" />
+                        <WrapPanel>
+                            <ui:Button Content="Record 5 s" Icon="{ui:SymbolIcon Record24}" FontSize="12" Padding="10,4" Margin="0,0,8,4" Command="{Binding RecordClipCommand}" />
+                            <ui:Button Content="Clear" Icon="{ui:SymbolIcon Delete24}" FontSize="12" Padding="8,4" Margin="0,0,8,4" Command="{Binding ClearClipCommand}" ToolTip="Discard clip" />
+                            <ui:ToggleSwitch Content="Loop clip" IsChecked="{Binding SelectedMicrophone.LoopClip, Mode=TwoWay}" IsEnabled="{Binding SelectedMicrophone.HasClip, FallbackValue=False}" FontSize="12" Margin="0,0,0,4" ToolTip="Replaces the live microphone input with the recorded clip" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Center: presets -->
+            <Border Grid.Column="1" Style="{StaticResource Panel}" Padding="12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,8">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="Sparkle24" FontSize="18" Margin="0,0,8,0" />
+                            <TextBlock Text="Voice presets" Style="{StaticResource SectionHeaderText}" />
+                            <TextBlock Text="{Binding Presets.Count, StringFormat={}{0} presets}" Style="{StaticResource Muted}" VerticalAlignment="Center" Margin="10,0,0,0" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <ui:Button Content="Import" Icon="{ui:SymbolIcon ArrowUpload24}" FontSize="12" Padding="10,4" Command="{Binding ImportPresetsCommand}" ToolTip="Import preset JSON files" />
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ui:TextBox Grid.Column="0" PlaceholderText="Search presets (female, deep, kid, old man, Obama, radio host…)" Icon="{ui:SymbolIcon Search24}"
+                                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" FontSize="12" ClearButtonEnabled="True" />
+                        <ComboBox Grid.Column="1" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" Width="180" Margin="8,0,0,0" FontSize="12" />
+                    </Grid>
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding PresetsView}" ItemTemplate="{StaticResource PresetCardTemplate}" Tag="{Binding}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.GroupStyle>
+                                <GroupStyle>
+                                    <GroupStyle.HeaderTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" Margin="0,6,0,8">
+                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13" Foreground="#C5CAE9" />
+                                                <TextBlock Text="{Binding ItemCount, StringFormat={} ({0})}" Foreground="{StaticResource MutedBrush}" FontSize="12" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GroupStyle.HeaderTemplate>
+                                </GroupStyle>
+                            </ItemsControl.GroupStyle>
+                        </ItemsControl>
+                    </ScrollViewer>
+                <!-- Background audio bed: horizontal strip under the presets -->
+                <Border Grid.Row="3" Style="{StaticResource Panel}" Padding="12,8" Margin="0,10,0,0" BorderBrush="#3A5A4A" Background="#182320">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" MinWidth="100" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="260" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
+                            <ui:SymbolIcon Symbol="MusicNote224" FontSize="18" Margin="0,0,8,0" ToolTip="Background audio: music or ambience played under your voice on the microphone channel, never altered by the voice effects." />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:Button Content="Choose file…" FontSize="11" Padding="8,2" Margin="0,0,8,0" Command="{Binding ChooseBackgroundFileCommand}" ToolTip="MP3, WAV, M4A/AAC, WMA, FLAC, MP4 audio, AIFF… Played under your voice on the microphone channel, never altered by the voice effects." />
+                                <TextBlock Text="{Binding BackgroundFileName}" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip="{Binding BackgroundFileName}" />
+                            </StackPanel>
+                            <TextBlock Text="{Binding BackgroundStatus}" Style="{StaticResource Muted}" Margin="0,2,0,2" TextTrimming="CharacterEllipsis" ToolTip="{Binding BackgroundStatus}" />
+                            <ProgressBar Minimum="0" Maximum="{Binding BackgroundDuration}" Value="{Binding BackgroundPosition, Mode=OneWay}" Height="3" Visibility="{Binding BackgroundHasFile, Converter={StaticResource BoolToVis}}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,12,0">
+                            <ui:ToggleSwitch Content="Play" IsChecked="{Binding BackgroundPlaying, Mode=TwoWay}" IsEnabled="{Binding BackgroundHasFile}" FontSize="12" Margin="0,0,10,0" />
+                            <ui:ToggleSwitch Content="Loop" IsChecked="{Binding BackgroundLoop, Mode=TwoWay}" FontSize="12" Margin="0,0,10,0" ToolTip="Start again from the beginning when the file ends" />
+                            <ui:Button Icon="{ui:SymbolIcon ArrowReset24}" FontSize="12" Padding="6,3" Margin="0,0,4,0" Command="{Binding RestartBackgroundCommand}" ToolTip="Restart from the beginning" IsEnabled="{Binding BackgroundHasFile}" />
+                            <ui:Button Icon="{ui:SymbolIcon Delete24}" FontSize="12" Padding="6,3" Command="{Binding ClearBackgroundFileCommand}" ToolTip="Remove the file" IsEnabled="{Binding BackgroundHasFile}" />
+                        </StackPanel>
+                        <Grid Grid.Column="3" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="File" Style="{StaticResource Muted}" VerticalAlignment="Center" />
+                            <Slider Grid.Row="0" Grid.Column="1" Minimum="0" Maximum="1.5" Value="{Binding BackgroundVolume, Mode=TwoWay}" VerticalAlignment="Center" IsMoveToPointEnabled="True" ToolTip="Level of the background file heard by the other side and in monitoring" />
+                            <TextBlock Grid.Row="1" Text="My voice" Style="{StaticResource Muted}" VerticalAlignment="Center" />
+                            <Slider Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="2" Value="{Binding VoiceVolume, Mode=TwoWay}" VerticalAlignment="Center" IsMoveToPointEnabled="True" ToolTip="Level of your (processed) voice on the microphone channel. Independent of presets. 1.0 = unchanged." />
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                </Grid>
+            </Border>
+
+            <!-- Right: global clean-up + editor -->
+            <Grid Grid.Column="2" Margin="12,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" Style="{StaticResource Panel}" Padding="12" Margin="0,0,0,10" BorderBrush="#3A4A8A" Background="#1B2030">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,4">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="MicPulse24" FontSize="18" Margin="0,0,8,0" />
+                                <TextBlock Text="Background noise &amp; voice removal" Style="{StaticResource SectionHeaderText}" />
+                            </StackPanel>
+                            <ui:Button Content="Reset" FontSize="11" Padding="8,2" HorizontalAlignment="Right" Command="{Binding ResetGlobalCleanupCommand}" />
+                        </Grid>
+                        <TextBlock Text="Global: applies to every microphone and stays the same whichever preset you pick. Adjust while speaking." Style="{StaticResource Muted}" Margin="0,0,0,6" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="118" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Noise removal" VerticalAlignment="Center" FontSize="12.5" ToolTip="Adaptive spectral suppression of fans, hum, hiss, keyboard and room noise. Higher = stronger." />
+                            <Slider Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding NoiseReduction, Mode=TwoWay}" VerticalAlignment="Center" Margin="4,0,8,0" IsMoveToPointEnabled="True" />
+                            <TextBlock Grid.Column="2" Text="{Binding NoiseFloorText}" FontFamily="Consolas" FontSize="11" Width="120" TextAlignment="Right" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" />
+                        </Grid>
+                        <Grid Margin="0,4,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="118" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Voice isolation" VerticalAlignment="Center" FontSize="12.5" ToolTip="Pushes down sounds quieter than your own voice: other people talking, TV, room chatter. Higher = only close, loud speech passes." />
+                            <Slider Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding VoiceIsolation, Mode=TwoWay}" VerticalAlignment="Center" Margin="4,0,8,0" IsMoveToPointEnabled="True" />
+                            <TextBlock Grid.Column="2" Text="{Binding IsolationText}" FontFamily="Consolas" FontSize="11" Width="120" TextAlignment="Right" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            <Border Grid.Row="1" Style="{StaticResource Panel}" Padding="12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,4">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="Options24" FontSize="18" Margin="0,0,8,0" />
+                            <TextBlock Text="Voice editor" Style="{StaticResource SectionHeaderText}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock Text="{Binding CurrentPresetName}" FontSize="12" Foreground="#9FA8DA" VerticalAlignment="Center" MaxWidth="170" TextTrimming="CharacterEllipsis" />
+                            <Border Background="#3A2F14" CornerRadius="6" Padding="6,1" Margin="6,0,0,0" Visibility="{Binding IsModified, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="modified" FontSize="10.5" Foreground="{StaticResource WarningBrush}" />
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                    <WrapPanel Grid.Row="1" Margin="0,0,0,8">
+                        <ui:Button Content="Save" Icon="{ui:SymbolIcon Save24}" FontSize="12" Padding="10,4" Margin="0,0,6,4" Command="{Binding SavePresetCommand}" ToolTip="Save changes to the current custom preset (or save as new)" />
+                        <ui:Button Content="Save as…" FontSize="12" Padding="10,4" Margin="0,0,6,4" Command="{Binding SavePresetAsCommand}" ToolTip="Store the current settings as a new preset" />
+                        <ui:Button Content="Revert" Icon="{ui:SymbolIcon ArrowReset24}" FontSize="12" Padding="10,4" Margin="0,0,6,4" Command="{Binding RevertToPresetCommand}" ToolTip="Discard edits and reload the applied preset" />
+                        <ui:Button Content="Neutral" FontSize="12" Padding="10,4" Margin="0,0,6,4" Command="{Binding ResetToNeutralCommand}" ToolTip="Reset every parameter (clean microphone)" />
+                    </WrapPanel>
+                    <TextBlock Grid.Row="2" Text="Select a microphone to edit its voice." Style="{StaticResource Muted}" TextAlignment="Center" Margin="20"
+                               Visibility="{Binding SelectedMicrophone, Converter={StaticResource NotNullToCollapsed}}" />
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                                  Visibility="{Binding SelectedMicrophone, Converter={StaticResource NullToCollapsed}}">
+                        <StackPanel DataContext="{Binding SelectedMicrophone.Profile}" Margin="0,0,6,0">
+
+                            <ui:CardExpander Style="{StaticResource ExpanderStyle}" IsExpanded="True" Icon="{ui:SymbolIcon PersonVoice24}">
+                                <ui:CardExpander.Header>
+                                    <StackPanel>
+                                        <TextBlock Text="Voice character" FontWeight="SemiBold" />
+                                        <TextBlock Text="Pitch, vocal tract size, age and texture" Style="{StaticResource Muted}" />
+                                    </StackPanel>
+                                </ui:CardExpander.Header>
+                                <StackPanel>
+                                    <ctl:ParameterSlider Label="Pitch" Unit="st" Minimum="-24" Maximum="24" Step="0.5" LargeStep="2" Decimals="1" Value="{Binding PitchSemitones}" Description="Fundamental frequency shift in semitones. +12 = one octave up." />
+                                    <ctl:ParameterSlider Label="Formant (size)" Unit="st" Minimum="-12" Maximum="12" Step="0.5" LargeStep="2" Decimals="1" Value="{Binding FormantSemitones}" Description="Vocal-tract size, independent of pitch. Positive = smaller (child/female), negative = bigger (large man/giant)." />
+                                    <ctl:ParameterSlider Label="Breathiness" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" Value="{Binding Breathiness}" Description="Envelope-shaped aspiration noise (airy, whispery, elderly)." />
+                                    <ctl:ParameterSlider Label="Rasp / gravel" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" Value="{Binding Rasp}" Description="Harmonic saturation for gravelly, rough voices." />
+                                    <ctl:ParameterSlider Label="Nasality" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" Value="{Binding Nasality}" Description="Nasal resonance (nerdy / congested)." />
+                                    <TextBlock Text="Vocal tremor (age / nervousness)" Style="{StaticResource Muted}" Margin="0,8,0,2" />
+                                    <ctl:ParameterSlider Label="Tremor rate" Unit="Hz" Minimum="0.5" Maximum="12" Step="0.1" LargeStep="1" Decimals="1" DefaultValue="5.5" Value="{Binding TremorRateHz}" />
+                                    <ctl:ParameterSlider Label="Pitch wobble" Unit="st" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" Decimals="2" Value="{Binding TremorPitchDepth}" Description="Depth of the pitch vibrato." />
+                                    <ctl:ParameterSlider Label="Volume wobble" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" Value="{Binding TremorAmpDepth}" Description="Depth of the amplitude tremor." />
+                                </StackPanel>
+                            </ui:CardExpander>
+
+                            <ui:CardExpander Style="{StaticResource ExpanderStyle}" Icon="{ui:SymbolIcon MicPulse24}">
+                                <ui:CardExpander.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Input &amp; noise gate" FontWeight="SemiBold" />
+                                            <TextBlock Text="Gain, rumble filter, noise gate" Style="{StaticResource Muted}" TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+                                        <ui:ToggleSwitch Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" IsChecked="{Binding GateEnabled}" Content="Gate" FontSize="12" />
+                                    </Grid>
+                                </ui:CardExpander.Header>
+                                <StackPanel>
+                                    <ctl:ParameterSlider Label="Input gain" Unit="dB" Minimum="-24" Maximum="24" Step="0.5" LargeStep="3" Decimals="1" Value="{Binding InputGainDb}" />
+                                    <ctl:ParameterSlider Label="Rumble filter" Unit="Hz" Minimum="20" Maximum="400" Step="5" LargeStep="20" Decimals="0" DefaultValue="80" Value="{Binding HighPassHz}" Description="High-pass filter removing desk thumps and plosives." />
+                                    <ctl:ParameterSlider Label="Gate threshold" Unit="dB" Minimum="-80" Maximum="0" Step="1" LargeStep="6" Decimals="0" DefaultValue="-48" Value="{Binding GateThresholdDb}" Description="Audio below this level is muted (keyboard clicks, fans)." />
+                                    <ctl:ParameterSlider Label="Gate attack" Unit="ms" Minimum="0.1" Maximum="100" Step="0.5" LargeStep="5" Decimals="1" DefaultValue="2" Value="{Binding GateAttackMs}" />
+                                    <ctl:ParameterSlider Label="Gate release" Unit="ms" Minimum="5" Maximum="2000" Step="5" LargeStep="50" Decimals="0" DefaultValue="150" Value="{Binding GateReleaseMs}" />
+                                    <ctl:ParameterSlider Label="Gate hold" Unit="ms" Minimum="0" Maximum="1000" Step="5" LargeStep="50" Decimals="0" DefaultValue="80" Value="{Binding GateHoldMs}" />
+                                </StackPanel>
+                            </ui:CardExpander>
+
+                            <ui:CardExpander Style="{StaticResource ExpanderStyle}" Icon="{ui:SymbolIcon Options24}">
+                                <ui:CardExpander.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Equalizer" FontWeight="SemiBold" />
+                                            <TextBlock Text="Shelves, four parametric bands, low-pass" Style="{StaticResource Muted}" TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+                                        <ui:ToggleSwitch Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" IsChecked="{Binding EqEnabled}" Content="EQ" FontSize="12" />
+                                    </Grid>
+                                </ui:CardExpander.Header>
+                                <StackPanel>
+                                    <ctl:ParameterSlider Label="Low shelf" Unit="Hz" Minimum="40" Maximum="600" Step="5" LargeStep="50" Decimals="0" DefaultValue="150" Value="{Binding LowShelfHz}" />
+                                    <ctl:ParameterSlider Label="Low shelf gain" Unit="dB" Minimum="-18" Maximum="18" Step="0.5" LargeStep="3" Decimals="1" Value="{Binding LowShelfDb}" />
+                                    <ctl:ParameterSlider Label="Band 1" Unit="Hz" Minimum="80" Maximum="1200" Step="10" LargeStep="100" Decimals="0" DefaultValue="300" Value="{Binding Peak1Hz}" />
+                                    <ctl:ParameterSlider Label="Band 1 gain" Unit="dB" Minimum="-18" Maximum="18" Step="0.5" LargeStep="3" Decimals="1" Value="{Binding Peak1Db}" />
+                                    <ctl:ParameterSlider Label="Band 1 Q" Minimum="0.2" Maximum="10" Step="0.1" LargeStep="1" Decimals="1" DefaultValue="1" Value="{Binding Peak1Q}" />
+                                    <ctl:ParameterSlider Label="Band 2" Unit="Hz" Minimum="300" Maximum="4000" Step="10" LargeStep="100" Decimals="0" DefaultValue="1000" Value="{Binding Peak2Hz}" />
+                                    <ctl:ParameterSlider Label="Band 2 gain" Unit="dB" Minimum="-18" Maximum="18" Step="0.5" LargeStep="3" Decimals="1" Value="{Binding Peak2Db}" />
+                                    <ctl:ParameterSlider Label="Band 2 Q" Minimum="0.2" Maximum="10" Step="0.1" LargeStep="1" Decimals="1" DefaultValue="1" Value="{Binding Peak2Q}" />
+                                    <ctl:ParameterSlider Label="Band 3" Unit="Hz" Minimum="1000" Maximum="8000" Step="10" LargeStep="200" Decimals="0" DefaultValue="3000" Value="{Binding Peak3Hz}" />
+                                    <ctl:ParameterSlider Label="Band 3 gain" Unit="dB" Minimum="-18" Maximum="18" Step="0.5" LargeStep="3" Decimals="1" Value="{Binding Peak3Db}" />
+                                    <ctl:ParameterSlider Label="Band 3 Q" Minimum="0.2" Maximum="10" Step="0.1" LargeStep="1" Decimals="1" DefaultValue="1" Value="{Binding Peak3Q}" />
+                                    <ctl:ParameterSlider Label="Band 4" Unit="Hz" Minimum="2000" Maximum="16000" Step="50" LargeStep="500" Decimals="0" DefaultValue="6000" Value="{Binding Peak4Hz}" />
+                                    <ctl:ParameterSlider Label="Band 4 gain" Unit="dB" Minimum="-18" Maximum="18" Step="0.5" LargeStep="3" Decimals="1" Value="{Binding Peak4Db}" />
+                                    <ctl:ParameterSlider Label="Band 4 Q" Minimum="0.2" Maximum="10" Step="0.1" LargeStep="1" Decimals="1" DefaultValue="1" Value="{Binding Peak4Q}" />
+                                    <ctl:ParameterSlider Label="High shelf" Unit="Hz" Minimum="2000" Maximum="16000" Step="50" LargeStep="500" Decimals="0" DefaultValue="8000" Value="{Binding HighShelfHz}" />
+                                    <ctl:ParameterSlider Label="High shelf gain" Unit="dB" Minimum="-18" Maximum="18" Step="0.5" LargeStep="3" Decimals="1" Value="{Binding HighShelfDb}" />
+                                    <ctl:ParameterSlider Label="Low-pass" Unit="Hz" Minimum="1000" Maximum="20000" Step="100" LargeStep="1000" Decimals="0" DefaultValue="20000" Value="{Binding LowPassHz}" Description="20000 = off. Lower values darken the voice (old radio, muffled)." />
+                                </StackPanel>
+                            </ui:CardExpander>
+
+                            <ui:CardExpander Style="{StaticResource ExpanderStyle}" Icon="{ui:SymbolIcon Pulse24}">
+                                <ui:CardExpander.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Dynamics" FontWeight="SemiBold" />
+                                            <TextBlock Text="Compressor and de-esser" Style="{StaticResource Muted}" TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
+                                            <ui:ToggleSwitch IsChecked="{Binding CompressorEnabled}" Content="Comp" FontSize="12" />
+                                            <ui:ToggleSwitch IsChecked="{Binding DeEsserEnabled}" Content="De-ess" FontSize="12" Margin="10,0,0,0" />
+                                        </StackPanel>
+                                    </Grid>
+                                </ui:CardExpander.Header>
+                                <StackPanel>
+                                    <ctl:ParameterSlider Label="Threshold" Unit="dB" Minimum="-60" Maximum="0" Step="1" LargeStep="6" Decimals="0" DefaultValue="-20" Value="{Binding CompThresholdDb}" />
+                                    <ctl:ParameterSlider Label="Ratio" Unit=":1" Minimum="1" Maximum="20" Step="0.1" LargeStep="1" Decimals="1" DefaultValue="3" Value="{Binding CompRatio}" />
+                                    <ctl:ParameterSlider Label="Attack" Unit="ms" Minimum="0.1" Maximum="200" Step="0.5" LargeStep="10" Decimals="1" DefaultValue="8" Value="{Binding CompAttackMs}" />
+                                    <ctl:ParameterSlider Label="Release" Unit="ms" Minimum="10" Maximum="2000" Step="10" LargeStep="100" Decimals="0" DefaultValue="120" Value="{Binding CompReleaseMs}" />
+                                    <ctl:ParameterSlider Label="Knee" Unit="dB" Minimum="0" Maximum="24" Step="0.5" LargeStep="3" Decimals="1" DefaultValue="6" Value="{Binding CompKneeDb}" />
+                                    <ctl:ParameterSlider Label="Makeup gain" Unit="dB" Minimum="-12" Maximum="24" Step="0.5" LargeStep="3" Decimals="1" DefaultValue="2" Value="{Binding CompMakeupDb}" />
+                                    <TextBlock Text="De-esser" Style="{StaticResource Muted}" Margin="0,8,0,2" />
+                                    <ctl:ParameterSlider Label="Frequency" Unit="Hz" Minimum="3000" Maximum="12000" Step="100" LargeStep="500" Decimals="0" DefaultValue="6500" Value="{Binding DeEsserHz}" />
+                                    <ctl:ParameterSlider Label="Threshold" Unit="dB" Minimum="-60" Maximum="0" Step="1" LargeStep="6" Decimals="0" DefaultValue="-30" Value="{Binding DeEsserThresholdDb}" />
+                                    <ctl:ParameterSlider Label="Amount" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" DefaultValue="0.5" Value="{Binding DeEsserAmount}" />
+                                </StackPanel>
+                            </ui:CardExpander>
+
+                            <ui:CardExpander Style="{StaticResource ExpanderStyle}" Icon="{ui:SymbolIcon Wand24}">
+                                <ui:CardExpander.Header>
+                                    <StackPanel>
+                                        <TextBlock Text="Effects" FontWeight="SemiBold" />
+                                        <TextBlock Text="Robot, chorus, radio, lo-fi, echo and reverb" Style="{StaticResource Muted}" />
+                                    </StackPanel>
+                                </ui:CardExpander.Header>
+                                <StackPanel>
+                                    <TextBlock Text="Robot (ring modulator)" Style="{StaticResource Muted}" Margin="0,2,0,2" />
+                                    <ctl:ParameterSlider Label="Robot mix" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" Value="{Binding RobotMix}" />
+                                    <ctl:ParameterSlider Label="Robot freq" Unit="Hz" Minimum="5" Maximum="2000" Step="1" LargeStep="50" Decimals="0" DefaultValue="60" Value="{Binding RobotFrequencyHz}" />
+                                    <TextBlock Text="Chorus" Style="{StaticResource Muted}" Margin="0,8,0,2" />
+                                    <ctl:ParameterSlider Label="Chorus mix" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" Value="{Binding ChorusMix}" />
+                                    <ctl:ParameterSlider Label="Chorus rate" Unit="Hz" Minimum="0.05" Maximum="8" Step="0.05" LargeStep="0.5" Decimals="2" DefaultValue="0.8" Value="{Binding ChorusRateHz}" />
+                                    <ctl:ParameterSlider Label="Chorus depth" Unit="ms" Minimum="0.2" Maximum="15" Step="0.1" LargeStep="1" Decimals="1" DefaultValue="3" Value="{Binding ChorusDepthMs}" />
+                                    <TextBlock Text="Radio / telephone / megaphone" Style="{StaticResource Muted}" Margin="0,8,0,2" />
+                                    <ctl:ParameterSlider Label="Radio mix" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" Value="{Binding RadioMix}" />
+                                    <ctl:ParameterSlider Label="Band low" Unit="Hz" Minimum="50" Maximum="2000" Step="10" LargeStep="100" Decimals="0" DefaultValue="300" Value="{Binding RadioLowHz}" />
+                                    <ctl:ParameterSlider Label="Band high" Unit="Hz" Minimum="1000" Maximum="12000" Step="50" LargeStep="500" Decimals="0" DefaultValue="3400" Value="{Binding RadioHighHz}" />
+                                    <ctl:ParameterSlider Label="Drive" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" Value="{Binding RadioDrive}" />
+                                    <ctl:ParameterSlider Label="Lo-fi crush" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" Value="{Binding Crush}" Description="Bit-depth and sample-rate reduction (walkie-talkie, retro game)." />
+                                    <TextBlock Text="Echo" Style="{StaticResource Muted}" Margin="0,8,0,2" />
+                                    <ctl:ParameterSlider Label="Echo mix" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" Value="{Binding EchoMix}" />
+                                    <ctl:ParameterSlider Label="Echo delay" Unit="ms" Minimum="20" Maximum="1500" Step="10" LargeStep="100" Decimals="0" DefaultValue="250" Value="{Binding EchoDelayMs}" />
+                                    <ctl:ParameterSlider Label="Echo feedback" Percent="True" Minimum="0" Maximum="0.95" Step="0.02" LargeStep="0.1" DefaultValue="0.3" Value="{Binding EchoFeedback}" />
+                                    <TextBlock Text="Reverb" Style="{StaticResource Muted}" Margin="0,8,0,2" />
+                                    <ctl:ParameterSlider Label="Reverb mix" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" Value="{Binding ReverbMix}" />
+                                    <ctl:ParameterSlider Label="Room size" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" DefaultValue="0.5" Value="{Binding ReverbSize}" />
+                                    <ctl:ParameterSlider Label="Damping" Percent="True" Minimum="0" Maximum="1" Step="0.02" LargeStep="0.1" DefaultValue="0.5" Value="{Binding ReverbDamping}" />
+                                    <ctl:ParameterSlider Label="Pre-delay" Unit="ms" Minimum="0" Maximum="200" Step="1" LargeStep="10" Decimals="0" DefaultValue="10" Value="{Binding ReverbPreDelayMs}" />
+                                </StackPanel>
+                            </ui:CardExpander>
+
+                            <ui:CardExpander Style="{StaticResource ExpanderStyle}" Icon="{ui:SymbolIcon Speaker224}">
+                                <ui:CardExpander.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Output" FontWeight="SemiBold" />
+                                            <TextBlock Text="Final level and safety limiter" Style="{StaticResource Muted}" TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+                                        <ui:ToggleSwitch Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" IsChecked="{Binding LimiterEnabled}" Content="Limiter" FontSize="12" />
+                                    </Grid>
+                                </ui:CardExpander.Header>
+                                <StackPanel>
+                                    <ctl:ParameterSlider Label="Output gain" Unit="dB" Minimum="-24" Maximum="24" Step="0.5" LargeStep="3" Decimals="1" Value="{Binding OutputGainDb}" />
+                                    <ctl:ParameterSlider Label="Limiter ceiling" Unit="dB" Minimum="-12" Maximum="0" Step="0.5" LargeStep="1" Decimals="1" DefaultValue="-1" Value="{Binding LimiterCeilingDb}" />
+                                </StackPanel>
+                            </ui:CardExpander>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+            </Grid>
+        </Grid>
+
+        <!-- ───────── Status bar ───────── -->
+        <Border Grid.Row="4" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="0,1,0,0" Padding="16,6">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="IN" Style="{StaticResource Muted}" VerticalAlignment="Center" Margin="0,0,6,0" FontWeight="SemiBold" />
+                    <ctl:LevelMeter Width="150" Height="12" Level="{Binding InputLevel}" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding InputLevelText}" FontFamily="Consolas" FontSize="11" Width="64" VerticalAlignment="Center" Margin="6,0,14,0" Foreground="{StaticResource MutedBrush}" />
+                    <TextBlock Text="OUT" Style="{StaticResource Muted}" VerticalAlignment="Center" Margin="0,0,6,0" FontWeight="SemiBold" />
+                    <ctl:LevelMeter Width="150" Height="12" Level="{Binding OutputLevel}" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding OutputLevelText}" FontFamily="Consolas" FontSize="11" Width="64" VerticalAlignment="Center" Margin="6,0,14,0" Foreground="{StaticResource MutedBrush}" />
+                    <TextBlock Text="GR" Style="{StaticResource Muted}" VerticalAlignment="Center" Margin="0,0,4,0" FontWeight="SemiBold" ToolTip="Compressor + limiter gain reduction" />
+                    <TextBlock Text="{Binding GainReductionText}" FontFamily="Consolas" FontSize="11" Width="56" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" />
+                    <Ellipse Width="9" Height="9" VerticalAlignment="Center" Margin="8,0,4,0" ToolTip="Noise gate open">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Fill" Value="#444" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding GateOpen}" Value="True">
+                                        <Setter Property="Fill" Value="{StaticResource SuccessBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                    <TextBlock Text="gate" Style="{StaticResource Muted}" VerticalAlignment="Center" Margin="0,0,14,0" />
+                    <TextBlock Text="pitch" Style="{StaticResource Muted}" VerticalAlignment="Center" Margin="0,0,4,0" />
+                    <TextBlock Text="{Binding PitchText}" FontFamily="Consolas" FontSize="11" Width="56" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" />
+                    <TextBlock Text="{Binding LatencyText}" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" ToolTip="Estimated end-to-end latency" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,12,0">
+                    <ui:Button Content="⚠ Mic silent — how to fix" Appearance="Caution" FontSize="11" Padding="8,2" Margin="0,0,10,0"
+                               Command="{Binding ShowInterferenceHelpCommand}" ToolTip="{Binding InputProblemText}"
+                               Visibility="{Binding HasInputProblem, Converter={StaticResource BoolToVis}}" />
+                    <TextBlock Text="{Binding StatusText}" Style="{StaticResource Muted}" VerticalAlignment="Center" />
+                </StackPanel>
+                <ui:Button Grid.Column="2" Content="Logs" FontSize="11" Padding="8,2" Command="{Binding OpenLogsCommand}" ToolTip="Open the log folder" />
+            </Grid>
+        </Border>
+    </Grid>
+</ui:FluentWindow>

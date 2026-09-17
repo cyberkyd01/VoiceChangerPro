@@ -1,0 +1,11 @@
+bin/
+obj/
+dist/
+installer/Output/
+*.user
+*.suo
+.vs/
+.idea/
+*.log
+TestResults/
+*.lnk
