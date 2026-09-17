@@ -91,7 +91,7 @@
                 <TextBlock Text="Diagnostics" Style="{StaticResource SectionTitle}" Margin="0,18,0,8" />
                 <Border Style="{StaticResource Panel}" Margin="0,0,0,20">
                     <StackPanel>
-                        <TextBlock Text="{Binding Version, StringFormat=Voice Changer Pro {0}}" />
+                        <TextBlock Text="{Binding Version, StringFormat=Voice Changer Pro by Cyberkyd {0}}" />
                         <TextBlock Text="{Binding LogFolder, StringFormat=Logs: {0}}" Style="{StaticResource Muted}" Margin="0,6,0,0" />
                         <TextBlock Text="{Binding PresetFolder, StringFormat=Presets: {0}}" Style="{StaticResource Muted}" Margin="0,2,0,0" />
                         <StackPanel Orientation="Horizontal" Margin="0,10,0,0">

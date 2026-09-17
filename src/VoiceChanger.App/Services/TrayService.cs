@@ -16,7 +16,7 @@ public sealed class TrayService : IDisposable
     {
         _app = app;
         var menu = new WinForms.ContextMenuStrip();
-        var show = new WinForms.ToolStripMenuItem("Open Voice Changer Pro", null, (_, _) => _app.ShowMainWindow()) { Font = new System.Drawing.Font(WinForms.Control.DefaultFont, System.Drawing.FontStyle.Bold) };
+        var show = new WinForms.ToolStripMenuItem("Open Voice Changer Pro by Cyberkyd", null, (_, _) => _app.ShowMainWindow()) { Font = new System.Drawing.Font(WinForms.Control.DefaultFont, System.Drawing.FontStyle.Bold) };
         _masterItem = new WinForms.ToolStripMenuItem("Voice effects enabled", null, (_, _) => ToggleMaster()) { CheckOnClick = false, Checked = app.Manager.MasterEnabled };
         var exit = new WinForms.ToolStripMenuItem("Exit", null, (_, _) => _app.ExitApplication());
         menu.Items.Add(show);
@@ -26,7 +26,7 @@ public sealed class TrayService : IDisposable
 
         _icon = new WinForms.NotifyIcon
         {
-            Text = "Voice Changer Pro",
+            Text = "Voice Changer Pro by Cyberkyd",
             ContextMenuStrip = menu,
             Visible = true,
             Icon = LoadIcon()
@@ -54,7 +54,7 @@ public sealed class TrayService : IDisposable
         _app.Manager.MasterEnabled = !_app.Manager.MasterEnabled;
         _app.MainViewModel.RefreshMaster();
         _masterItem.Checked = _app.Manager.MasterEnabled;
-        ShowBalloon("Voice Changer Pro", _app.Manager.MasterEnabled ? "Voice effects enabled" : "Voice effects disabled (pass-through)");
+        ShowBalloon("Voice Changer Pro by Cyberkyd", _app.Manager.MasterEnabled ? "Voice effects enabled" : "Voice effects disabled (pass-through)");
     }
 
     public void ShowBalloon(string title, string message, bool warning = false)

@@ -1,188 +1,183 @@
-# Voice Changer Pro
+<p align="center">
+  <img src="src/VoiceChanger.App/Assets/app-256.png" width="96" alt="Voice Changer Pro by Cyberkyd" />
+</p>
 
-Real-time voice changer for Windows 10/11. It captures any microphone, transforms the voice with a
-professional DSP chain (pitch, formant, breath, rasp, tremor, EQ, dynamics and effects) and routes the
-result into a **virtual audio cable** so that *every* application – games, browsers, Discord, Zoom,
-Teams, softphones, recorders – hears the changed voice as if it were a normal microphone.
+<h1 align="center">Voice Changer Pro by Cyberkyd</h1>
 
-![Voice Changer Pro](src/VoiceChanger.App/Assets/app-256.png)
+<p align="center">
+  <b>Real-time, system-wide voice changer for Windows.</b><br/>
+  Ultra-realistic voices, studio-grade clean-up and a background music bed — heard by every app that uses your microphone.
+</p>
 
-## Highlights
+<p align="center">
+  <a href="https://github.com/cyberkyd01/VoiceChangerPro/releases/latest"><img alt="Download" src="https://img.shields.io/badge/Download-Windows%20installer-5865F2?style=for-the-badge&logo=windows" /></a>
+  <img alt="Platform" src="https://img.shields.io/badge/Windows-10%20%7C%2011%20x64-0078D6?style=for-the-badge&logo=windows" />
+  <img alt=".NET" src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet" />
+  <img alt="Tests" src="https://img.shields.io/badge/tests-42%20passing-3DD68C?style=for-the-badge" />
+</p>
 
-- **System-wide**: processed audio is played into a virtual cable; the cable's microphone endpoint is
-  made the Windows default microphone (all roles), so every app uses it automatically. Can be enabled or
-  disabled at any time – when disabled, the raw microphone passes through so calls keep working.
-- **Every microphone**: each physical microphone gets its own processing engine with its own preset.
-  Apply a preset to one microphone or to all of them with a single click.
-- **Hot-plug**: new microphones and headsets are detected the moment they are connected (WASAPI
-  endpoint notifications) and can be activated automatically with a default preset.
-- **Real-time tuning**: every slider changes the sound immediately. Turn on *Hear myself* (headphones
-  recommended) or record a 5-second test clip and loop it through the chain while you tweak.
-- **78 realistic built-in presets**: 20 female and 20 male voices in different flavours (soft, bright,
-  husky, corporate, radio, storyteller, baritone, rocker, executive, grandfather …), 11 age presets,
-  10 professional/broadcast chains, 11 accent flavours and 6 utilities. No cartoon or robot voices.
-  Unlimited custom presets with JSON import/export.
-- **Background audio bed**: play any audio file (MP3, WAV, M4A/AAC, WMA, FLAC, MP4 audio, AIFF …) under
-  your voice on the microphone channel – music beds for podcasts and radio, ambience for story recording,
-  hold music on calls. Loop on/off, play/pause, restart, volume; streamed from disk, mixed *after* the
-  voice chain so presets and noise removal never alter it; heard by every app and in your monitoring.
-- **Global background noise & voice removal**: an adaptive spectral noise suppressor and a voice-isolation
-  expander sit *outside* the presets. Two sliders, adjustable while you talk, identical for every preset
-  and every microphone, remembered until you change them.
-- **Professional toolset**: input gain, rumble filter, noise gate, pitch-synchronous pitch shifter
-  (TD-PSOLA, formant-preserving), STFT formant shifter with pitch-adaptive spectral-envelope estimation,
-  breathiness synthesis, vocal tremor, saturation, nasality, 7-band parametric EQ, de-esser, soft-knee
-  compressor, ring modulator, chorus, radio/telephone band-limiter with drive, bit-crusher, echo, Freeverb
-  reverb, output gain and a brick-wall limiter. Live meters for input, output, gain reduction, gate state
-  and detected pitch.
-- **Production hardening**: single-instance guard, tray icon with quick toggles, start with Windows,
-  atomic JSON persistence, rotating file logs, crash-safe audio callbacks, automatic recovery when a
-  device disappears and comes back, clock-drift compensation between capture and playback devices.
+---
 
-## Requirements
+## What it does
 
-| Component | Notes |
-|-----------|-------|
-| Windows 10 1809+ or Windows 11, x64 | WASAPI shared-mode audio |
-| Virtual audio cable driver | Recommended: **VB-CABLE** (free) – <https://vb-audio.com/Cable/>. Also detected: Virtual Audio Cable, VoiceMeeter, Screaming Bee, SteelSeries Sonar, NVIDIA Broadcast. |
-| .NET 8 Desktop Runtime | *Not* needed for the published build in `dist\` (self-contained). Needed only when running the Debug build from `bin\`. |
+Voice Changer Pro captures any microphone, transforms your voice in real time and delivers the result
+to a virtual microphone that **every application** can use — games, Discord, Zoom, Teams, Google Meet,
+softphones, browsers, OBS, Audacity and any recorder. There is nothing to configure in the other apps:
+the virtual microphone becomes the Windows default, and a master switch drops you back to your real
+voice at any moment without interrupting the call.
+
+**Built for**
+
+| | |
+|---|---|
+| 📞 **Callers & support agents** | Consistent, clear, professional voice on every call; office noise removed; hold-music or ambience bed on demand. |
+| 🎙️ **Podcasters & radio hosts** | Broadcast chain (EQ, de-esser, compressor, limiter) and a looping music bed mixed under the voice before it reaches the recorder. |
+| 🎮 **Gamers & streamers** | Realistic character voices in any game or voice chat with low latency and one-click switching. |
+| 📖 **Storytellers & narrators** | Believable age and gender voices, vocal tremor and breath for characters, ambience under the narration. |
+| 🏫 **Teachers & presenters** | Noise removal, voice isolation and an even, controlled level. |
+| 🕶️ **Privacy** | Take calls with a voice that is not recognisably yours. |
+
+---
+
+## Pro features
+
+### Voice engine
+- **Pitch-synchronous pitch shifting (TD-PSOLA)** — pitch moves, the vocal tract does not. No chipmunk, no robot: the voice keeps its natural character. Pitch tracked every 5 ms with voicing hysteresis and octave-jump protection.
+- **Independent vocal-tract size (formant) control** — STFT spectral-envelope warping with pitch-adaptive true-envelope estimation, smoothed over time.
+- **Breathiness synthesis, vocal tremor, rasp/gravel, nasality** — the ingredients of age, mood and character.
+- **7-band parametric EQ, de-esser, soft-knee compressor, noise gate, brick-wall limiter** — a full broadcast chain on every microphone.
+- **Creative effects** for custom presets: ring-mod, chorus, radio/telephone band-limiter, lo-fi crush, echo, reverb.
+
+### 78 ultra-realistic presets
+- **20 female voices** — soft & warm, bright & energetic, deep sultry, girl next door, corporate, southern, late-night host, whispery, presenter, storyteller, playful, yoga instructor, influencer, mom, grandmother, teen, young woman, mature woman, studio singer, nurse.
+- **20 male voices** — deep baritone, bass announcer, warm tenor, raspy rocker, soft-spoken, laid-back surfer, executive, drill sergeant, gamer, nerdy, southern gentleman, grandfather, teen, college guy, heavyweight, nervous guy, trailer narrator, late-night DJ, podcast host, sports commentator.
+- **Age** (kids to elderly), **Professional** (support agent, news anchor, audiobook narrator, radio DJ, ASMR, e-sports caster …), **Accent flavours** (tonal colorations), **Utilities**.
+- Unlimited **custom presets**, favourites, search, duplicate, rename, **JSON import/export** to share with others.
+
+### Noise cancellation & voice isolation (global)
+- **Adaptive spectral noise removal** — tracks the noise floor continuously (fans, hum, hiss, keyboard bleed, traffic); no "learn noise" step; up to 30 dB of reduction while the voice keeps its tone.
+- **Voice isolation** — a downward expander that pushes other people, TV and room chatter below your close-talking voice, by up to 40 dB.
+- Both sit **outside the presets**: switch voices freely, the clean-up stays exactly as you set it. Adjustable live while you talk.
+
+### Background audio bed
+- Play **any audio file** (MP3, WAV, M4A/AAC, WMA, FLAC, MP4 audio, AIFF) under your voice on the microphone channel — the other party hears both.
+- Loop, play/pause, restart; separate **file volume** and **voice volume** sliders, independent of presets.
+- Streamed from disk (hour-long beds are fine), mixed **after** the voice chain so effects and noise removal never alter it.
+
+### System-wide routing & device handling
+- Works with **VB-CABLE** (free; the installer sets it up), Virtual Audio Cable, VoiceMeeter, SteelSeries Sonar, NVIDIA Broadcast and Screaming Bee devices — auto-detected, manual override available.
+- One click makes the cable the **Windows default microphone** for all roles; restored on exit.
+- **Every microphone** gets its own engine and preset; **hot-plug** detection starts new headsets automatically; apply a preset to one mic or all.
+- **Live monitoring** on headphones, **5-second test clip** you can loop while tuning, live IN/OUT/gain-reduction/gate/pitch meters.
+
+### Production hardening
+- Self-contained single-file build (no .NET install), per-user installer with uninstaller, tray icon with quick toggles, start with Windows, single-instance guard.
+- Atomic JSON persistence with schema migrations, rotating logs, crash-safe audio callbacks, automatic recovery when devices vanish and return, inaudible clock-drift compensation.
+- **Interference detector**: recognises other voice-changer drivers that silence microphones system-wide (NCH Voxal, MorphVOX, AV Voice Changer) and tells you exactly how to fix it.
+- 42 automated tests: pitch-ratio accuracy, formant preservation, level stability, noise-suppression SNR, preset library rules, persistence, background decoding, real-device smoke tests.
+
+---
 
 ## Installation
 
-**Installer (recommended)**: download `VoiceChangerPro-Setup-<version>.exe` from the
+**Installer (recommended)** — download `VoiceChangerPro-Setup-<version>.exe` from the
 [Releases page](https://github.com/cyberkyd01/VoiceChangerPro/releases) and run it. No administrator
-rights are needed for the app itself (it installs per user by default). The wizard offers to download
-and install **VB-CABLE**, the free virtual audio cable that lets other applications hear your changed
-voice; that driver step asks for administrator confirmation and may need one reboot. Everything else
-(the .NET runtime, the audio engine) is bundled. Uninstall from Settings › Apps like any other program.
+rights are needed for the app itself (per-user install). The wizard offers to download and install
+**VB-CABLE**, the free virtual audio cable that lets other applications hear your changed voice; that
+driver step asks for administrator confirmation and may need one reboot. The .NET runtime is bundled.
+Uninstall from Settings › Apps.
 
-**Portable**: `dist\VoiceChangerPro.exe` from a `build.ps1 -Publish` build runs from any folder with
-no installation; install VB-CABLE separately from <https://vb-audio.com/Cable/>.
+**Portable** — `VoiceChangerPro.exe` from the release (or from `build.ps1 -Publish`) runs from any
+folder; install VB-CABLE separately from <https://vb-audio.com/Cable/>.
 
-## Quick start (end users)
+## Quick start
 
-1. Install VB-CABLE (the installer offers this; otherwise run its setup as administrator, then reboot once).
-2. Start `Voice Changer Pro`. The status pill in the toolbar turns green: *VB-CABLE ready*.
-3. Your microphones are listed on the left and are already live. Pick one, choose a preset in the middle
-   (double-click or *Apply*), and fine-tune it in the *Voice editor* on the right.
-4. Put on headphones and switch on *Hear myself* to monitor the result in real time, or use
-   *Record 5 s* + *Loop clip* to tune hands-free.
-5. Click **Set as Windows default mic** (done automatically by default). Every app now receives the
-   changed voice. In apps that let you choose a microphone, pick *CABLE Output (VB-Audio Virtual Cable)*.
-6. Use the **Voice effects** master switch (also in the tray menu) to turn the effect on or off at any
-   moment without touching the app you are talking in.
+1. Start the app — the toolbar pill turns green: *VB-CABLE ready · default mic ✓*.
+2. Your microphones are listed on the left and already live. Select one.
+3. Put on headphones, switch on **Hear myself**, pick a preset (double-click or *Apply*), fine-tune it on the right.
+4. Dial in **Noise removal** and **Voice isolation** while speaking.
+5. Optional: **Choose file…** in *Background audio*, press **Play**, balance *File* and *My voice*.
+6. In any other app, the microphone is now *CABLE Output (VB-Audio Virtual Cable)*. Use the **Voice effects** switch to go back to your real voice any time.
 
-Closing the window minimises to the tray; processing continues. Exit via the tray icon.
+📘 **Full documentation: [User Guide](docs/USER-GUIDE.md)** — every control, per-app setup (Discord, Zoom, Teams, OBS, games, softphones), recipes and troubleshooting.
+
+---
 
 ## Building from source
 
 ```powershell
 # .NET 8 SDK required (https://dotnet.microsoft.com/download/dotnet/8.0)
-.\build.ps1                # restore, build, unit tests
-.\build.ps1 -Publish       # + self-contained single-file build in .\dist
+.\build.ps1                       # restore, build, unit tests
+.\build.ps1 -Publish              # + self-contained single-file build in .\dist
 .\build.ps1 -Publish -Installer   # + Windows installer in .\installer\Output (needs Inno Setup 6: winget install JRSoftware.InnoSetup)
-.\build.ps1 -Integration   # + real-device tests (opens the default mic and speakers)
+.\build.ps1 -Integration          # + real-device tests (opens the default mic and speakers)
 ```
 
-Or with the CLI directly:
-
-```powershell
-dotnet build VoiceChanger.sln
-dotnet test tests\VoiceChanger.Core.Tests
-dotnet run --project src\VoiceChanger.App
-```
-
-## Solution layout
+### Solution layout
 
 ```
 VoiceChanger.sln
 ├─ src/VoiceChanger.Core          # engine, DSP, devices, presets, settings, logging (no UI dependency)
-│  ├─ Audio/Devices               # WASAPI enumeration + hot-plug, IPolicyConfig default device, cable detection
-│  ├─ Audio/Engine                # VoiceEngine (per mic), OutputSink (render + drift control), EngineManager
-│  ├─ Dsp                         # Biquad, FFT, PitchShifter, FormantShifter, Dynamics, Effects, VoicePipeline
+│  ├─ Audio/Devices               # WASAPI enumeration + hot-plug, default-device policy, cable + interference detection
+│  ├─ Audio/Engine                # VoiceEngine (per mic), OutputSink (render + drift control), BackgroundTrack, EngineManager
+│  ├─ Dsp                         # Biquad, FFT, PsolaPitchShifter, FormantShifter, NoiseSuppressor, Dynamics, Effects, VoicePipeline
 │  ├─ Presets                     # VoiceProfile (parameter model), VoicePreset, BuiltInPresets (78), PresetStore
 │  └─ Settings / Logging
 ├─ src/VoiceChanger.App           # WPF (Fluent/Mica UI), MVVM, tray, dialogs
-└─ tests/VoiceChanger.Core.Tests  # DSP correctness, preset library, persistence, device integration
+├─ installer/                     # Inno Setup script (per-user installer, VB-CABLE bootstrap)
+├─ docs/USER-GUIDE.md             # end-user documentation
+└─ tests/VoiceChanger.Core.Tests  # DSP correctness, preset rules, persistence, background audio, device smoke tests
 ```
 
 ### Signal chain
 
 ```
-mic → [global: noise suppression → voice isolation] → input gain → high-pass → noise gate
+mic → [global: noise removal → voice isolation] → input gain → high-pass → noise gate
     → pitch shift (TD-PSOLA) → formant shift + breath (STFT) → tremor → rasp → nasality → EQ
-    → de-esser → compressor → robot → chorus → radio → crush → echo → reverb → output gain
-    → limiter → virtual cable (+ headphone monitor)
+    → de-esser → compressor → effects → output gain → limiter → [voice volume] → + background audio
+    → virtual cable (+ headphone monitor)
 ```
 
-**Pitch** uses time-domain pitch-synchronous overlap-add (TD-PSOLA): a pitch tracker (zero-padded FFT
-autocorrelation with window-bias correction, sub-harmonic guard and median smoothing) runs every 5 ms,
-pitch marks are snapped to glottal pulses, and two-period Hann grains are re-spaced at the target period.
-Grains are never resampled, so the vocal-tract resonances (formants) stay exactly where they were: the
-voice keeps its natural character and only the fundamental moves. Unvoiced consonants pass unchanged.
-**Formant** (vocal-tract size) is then an independent, absolute control: the STFT stage estimates the
-spectral envelope per frame (iterative true-envelope cepstrum, lifter length following the detected
-pitch period), whitens the harmonics, warps the envelope along frequency and re-applies it.
-
-**Background noise & voice removal** is global (outside presets, identical for every preset and every
-microphone, persisted in settings). *Noise removal* is an adaptive STFT Wiener suppressor: the noise
-spectrum is tracked continuously with minimum statistics (no learning step), the a-priori SNR uses the
-decision-directed estimator, and the slider sets the residual floor (−4 dB … −30 dB) and aggressiveness.
-*Voice isolation* is a downward expander that pushes sounds quieter than the close-talking voice
-(other people, TV, room chatter) down by up to 40 dB. Both react instantly to the sliders.
+**Pitch**: time-domain pitch-synchronous overlap-add. A tracker (zero-padded FFT autocorrelation with
+window-bias correction, sub-harmonic guard, continuity preference, median smoothing, voicing hysteresis)
+runs every 5 ms; pitch marks are chained one period apart and refined by waveform similarity to the
+previous grain; two-period Hann grains are re-spaced at the target period. Grains are never resampled,
+so formants are preserved exactly. **Formant**: iterative true-envelope cepstral estimation with a
+pitch-following lifter, whitening, frequency-axis warp, temporally smoothed correction gain.
+**Noise removal**: STFT Wiener suppressor, minimum-statistics noise tracking, decision-directed a-priori
+SNR, peak-preserving gain smoothing. **Voice isolation**: soft-knee downward expander.
 
 ### Latency
 
-DSP latency is about 80 ms at 48 kHz (noise stage 11 ms + PSOLA 48 ms + formant STFT 21 ms). With the
-default 20 ms buffers the end-to-end latency shown in the status bar is roughly 150 ms; select 10 ms
-buffers in *Settings* on a fast machine for around 110 ms. Monitoring through headphones is recommended
-because hearing your own delayed voice through speakers is distracting and can feed back into the mic.
+About 80 ms of DSP latency at 48 kHz (noise stage 11 ms + PSOLA 48 ms + formant 21 ms). With the
+default 20 ms buffers the end-to-end figure in the status bar is roughly 150 ms; 10 ms buffers bring
+it to about 110 ms on a fast machine.
+
+---
 
 ## Data locations
 
 | Item | Path |
 |------|------|
-| Settings (per-mic configs, favourites, window state) | `%AppData%\VoiceChangerPro\settings.json` |
+| Settings (per-mic configs, favourites, global sliders, background file) | `%AppData%\VoiceChangerPro\settings.json` |
 | Custom presets (one JSON per preset) | `%AppData%\VoiceChangerPro\presets\` |
 | Logs (14-day rotation) | `%LocalAppData%\VoiceChangerPro\logs\` |
 
-## Troubleshooting: "my microphone is silent"
+Nothing leaves your PC. The app has no online component apart from the optional VB-CABLE download in the installer.
 
-If the *IN* meter never moves and the status bar shows **Mic silent — how to fix**, another voice
-changer is intercepting the microphone at the driver level. The app scans for these on start-up and
-names them in the log and in the *how to fix* dialog. Known offenders:
+## Troubleshooting
 
-| Product | Component | Effect |
-|---------|-----------|--------|
-| NCH Voxal Voice Changer | `voxaldriver` registered as an *UpperFilters* entry on the Windows audio (MEDIA) device class | Every microphone on the PC passes through Voxal; when Voxal is not running the stream is silent in **all** apps, even Windows Settings |
-| MorphVOX Pro | `ScreamBAudioSvc` kernel driver | Virtual "Screaming Bee Audio" device; can hold the microphone |
-| AV Voice Changer Diamond | `vcs`, `VCSVADHWSer` drivers | Virtual audio device that hooks capture |
+See the [User Guide › Troubleshooting](docs/USER-GUIDE.md#16-troubleshooting). The most common issue —
+a silent microphone caused by another voice changer's driver (NCH Voxal, MorphVOX, AV Voice Changer)
+— is detected automatically and explained by the **Mic silent — how to fix** button in the status bar.
 
-Fix: uninstall the other product (Settings › Apps › Installed apps), restart Windows, then press
-*Refresh* in Voice Changer Pro. Only one product can own the microphone path. If uninstalling is not an
-option, an administrator can remove the filter name from
-`HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e96c-e325-11ce-bfc1-08002be10318}\UpperFilters`
-(keep `ksthunk`) and reboot.
+## Notes
 
-If no interfering driver is reported, check Settings › Privacy & security › Microphone (both
-*Microphone access* and *Let desktop apps access your microphone* must be on), the headset's mute
-switch, and the input level under Settings › System › Sound › Input.
-
-## Notes and limitations
-
-- **Accent presets are tonal flavours only.** Digital signal processing cannot change pronunciation;
-  those presets colour resonance and EQ and say so in their description. True accent conversion needs
-  an AI voice-conversion model, which is out of scope for a real-time DSP pipeline.
-- **Celebrity-inspired presets** evoke a style (deep narrator, gravel vigilante, smooth late-night
-  host …). They do not clone any real person's voice.
-- The virtual cable driver is a kernel component and must be installed separately (administrator
-  rights, one reboot). The app never installs drivers itself.
-- Setting the default microphone uses the `IPolicyConfig` COM interface, the same mechanism as popular
-  audio-switching utilities; it is undocumented but has been stable since Windows 7.
-- Exclusive-mode / ASIO capture is not used; shared-mode WASAPI keeps the microphone available to the
-  operating system and other tools.
+- Accent presets are tonal flavours only; digital signal processing cannot change pronunciation.
+- The virtual cable driver is a separate kernel component (VB-CABLE by VB-Audio, free); the installer downloads it from the vendor and never bundles it.
+- Default-microphone switching uses the `IPolicyConfig` COM interface, the same mechanism as popular audio-switching utilities.
 
 ## License
 
-Copyright © 2026. All rights reserved unless a license file states otherwise.
+Copyright © 2026 Cyberkyd. All rights reserved unless a license file states otherwise.
 NAudio (MIT), WPF-UI (MIT) and CommunityToolkit.Mvvm (MIT) are used under their respective licenses.

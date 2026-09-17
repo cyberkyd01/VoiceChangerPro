@@ -4,10 +4,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Version>1.0.0</Version>
-    <Authors>Voice Changer Pro</Authors>
-    <Company>Voice Changer Pro</Company>
-    <Product>Voice Changer Pro</Product>
-    <Copyright>Copyright © 2026</Copyright>
+    <Authors>Cyberkyd</Authors>
+    <Company>Cyberkyd</Company>
+    <Product>Voice Changer Pro by Cyberkyd</Product>
+    <Copyright>Copyright © 2026 Cyberkyd</Copyright>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CA1416</NoWarn>

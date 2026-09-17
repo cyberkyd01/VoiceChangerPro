@@ -42,7 +42,7 @@ public partial class MainWindow
         }
         else if (s.IsFirstRun && Vm != null)
         {
-            Vm.ShowNotification("Welcome to Voice Changer Pro",
+            Vm.ShowNotification("Welcome to Voice Changer Pro by Cyberkyd",
                 Vm.CableOk
                     ? "Pick a preset, turn on 'Hear myself' with headphones, and click 'Set as Windows default mic' so every app uses your new voice."
                     : "For other apps to hear your changed voice you need a virtual audio cable. Click 'Get VB-CABLE (free)', install it, then press Refresh.");
@@ -69,7 +69,7 @@ public partial class MainWindow
         {
             e.Cancel = true;
             Hide();
-            App.Current.Tray?.ShowBalloon("Still running", "Voice Changer Pro keeps processing in the tray. Right-click the icon to exit.");
+            App.Current.Tray?.ShowBalloon("Still running", "Voice Changer Pro by Cyberkyd keeps processing in the tray. Right-click the icon to exit.");
         }
         else
         {

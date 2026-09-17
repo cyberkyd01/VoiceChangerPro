@@ -64,7 +64,7 @@ public partial class App : Application
         catch (Exception ex)
         {
             Log.Error("App", "Fatal startup error", ex);
-            MessageBox.Show($"Voice Changer Pro could not start:\n\n{ex.Message}\n\nSee the log in {Log.Directory}", "Voice Changer Pro", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Voice Changer Pro by Cyberkyd could not start:\n\n{ex.Message}\n\nSee the log in {Log.Directory}", "Voice Changer Pro by Cyberkyd", MessageBoxButton.OK, MessageBoxImage.Error);
             Shutdown(1);
         }
     }
