@@ -3,9 +3,9 @@
 ; Input:  dist\VoiceChangerPro.exe (self-contained build, produced by build.ps1 -Publish)
 ; Output: installer\Output\VoiceChangerPro-Setup-<version>.exe
 
-#define MyAppName "Voice Changer Pro"
+#define MyAppName "Voice Changer Pro by Cyberkyd"
 #define MyAppVersion "1.0.0"
-#define MyAppPublisher "Voice Changer Pro"
+#define MyAppPublisher "Cyberkyd"
 #define MyAppURL "https://github.com/cyberkyd01/VoiceChangerPro"
 #define MyAppExeName "VoiceChangerPro.exe"
 #define MyAppId "{{7E1C0D6A-4B3F-4A0E-9C55-2F0C6B1D8E21}"

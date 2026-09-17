@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Builds, tests and publishes Voice Changer Pro.
+    Builds, tests and publishes Voice Changer Pro by Cyberkyd.
 
 .DESCRIPTION
     Usage:

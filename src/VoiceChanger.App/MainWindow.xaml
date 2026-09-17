@@ -8,7 +8,7 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  mc:Ignorable="d"
                  d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
-                 Title="Voice Changer Pro"
+                 Title="Voice Changer Pro by Cyberkyd"
                  Width="1280" Height="780" MinWidth="1000" MinHeight="600"
                  WindowStartupLocation="CenterScreen"
                  ExtendsContentIntoTitleBar="True"
@@ -153,7 +153,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Grid.Row="0" Title="Voice Changer Pro" ShowMaximize="True" ShowMinimize="True">
+        <ui:TitleBar Grid.Row="0" Title="Voice Changer Pro by Cyberkyd" ShowMaximize="True" ShowMinimize="True">
             <ui:TitleBar.Icon>
                 <ui:ImageIcon Source="pack://application:,,,/Assets/app-256.png" />
             </ui:TitleBar.Icon>

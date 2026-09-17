@@ -26,7 +26,7 @@ public static class Program
         }
 
         Log.Initialize();
-        Log.Info("App", $"Voice Changer Pro starting (args: {string.Join(' ', args)})");
+        Log.Info("App", $"Voice Changer Pro by Cyberkyd starting (args: {string.Join(' ', args)})");
 
         var app = new App { StartMinimized = args.Contains("--minimized", StringComparer.OrdinalIgnoreCase) };
         app.InitializeComponent();
