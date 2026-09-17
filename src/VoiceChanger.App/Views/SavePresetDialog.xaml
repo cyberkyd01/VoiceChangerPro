@@ -1,0 +1,30 @@
+<ui:FluentWindow x:Class="VoiceChanger.App.Views.SavePresetDialog"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 Title="Save preset" Width="460" SizeToContent="Height" ResizeMode="NoResize"
+                 WindowStartupLocation="CenterOwner" ExtendsContentIntoTitleBar="True"
+                 WindowBackdropType="Mica" WindowCornerPreference="Round" ShowInTaskbar="False">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ui:TitleBar Grid.Row="0" Title="Save preset" ShowMaximize="False" ShowMinimize="False" />
+        <StackPanel Grid.Row="1" Margin="20,8,20,20">
+            <TextBlock Text="Name" Margin="0,0,0,4" />
+            <ui:TextBox x:Name="NameBox" PlaceholderText="e.g. My streaming voice" />
+            <TextBlock Text="Category" Margin="0,12,0,4" />
+            <ComboBox x:Name="CategoryBox" IsEditable="True" />
+            <TextBlock Text="Description" Margin="0,12,0,4" />
+            <ui:TextBox x:Name="DescriptionBox" PlaceholderText="What does it sound like? When to use it?" TextWrapping="Wrap" AcceptsReturn="True" MinHeight="64" />
+            <TextBlock Text="Icon (emoji)" Margin="0,12,0,4" />
+            <ui:TextBox x:Name="IconBox" Width="80" HorizontalAlignment="Left" MaxLength="4" />
+            <TextBlock x:Name="ErrorText" Foreground="#F04747" Margin="0,10,0,0" Visibility="Collapsed" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+                <ui:Button Content="Cancel" Click="OnCancel" Margin="0,0,8,0" MinWidth="90" />
+                <ui:Button x:Name="OkButton" Content="Save" Appearance="Primary" Click="OnSave" MinWidth="90" IsDefault="True" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</ui:FluentWindow>

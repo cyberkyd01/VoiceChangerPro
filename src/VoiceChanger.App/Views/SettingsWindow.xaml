@@ -1,0 +1,112 @@
+<ui:FluentWindow x:Class="VoiceChanger.App.Views.SettingsWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:vm="clr-namespace:VoiceChanger.App.ViewModels"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 mc:Ignorable="d"
+                 d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel}"
+                 Title="Settings" Width="640" Height="720" MinWidth="560" MinHeight="520"
+                 WindowStartupLocation="CenterOwner" ExtendsContentIntoTitleBar="True"
+                 WindowBackdropType="Mica" WindowCornerPreference="Round" ShowInTaskbar="False">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ui:TitleBar Grid.Row="0" Title="Settings" ShowMaximize="False" ShowMinimize="False" />
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="20,4,20,0">
+            <StackPanel>
+                <TextBlock Text="General" Style="{StaticResource SectionTitle}" />
+                <Border Style="{StaticResource Panel}">
+                    <StackPanel>
+                        <ui:ToggleSwitch Content="Start with Windows (minimized to tray)" IsChecked="{Binding StartWithWindows}" />
+                        <ui:ToggleSwitch Content="Start minimized" IsChecked="{Binding StartMinimized}" Margin="0,8,0,0" />
+                        <ui:ToggleSwitch Content="Closing the window minimizes to the tray (keeps processing)" IsChecked="{Binding MinimizeToTray}" Margin="0,8,0,0" />
+                        <ui:ToggleSwitch Content="Show tray notifications (device connected, preset applied…)" IsChecked="{Binding ShowNotifications}" Margin="0,8,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="Audio engine" Style="{StaticResource SectionTitle}" Margin="0,18,0,8" />
+                <Border Style="{StaticResource Panel}">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Buffer size" />
+                                <TextBlock Text="Smaller = lower latency, higher CPU and risk of drop-outs. 20 ms is a good default." Style="{StaticResource Muted}" />
+                            </StackPanel>
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding BufferOptions}" SelectedItem="{Binding BufferMilliseconds}" Width="110" VerticalAlignment="Center">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding StringFormat={}{0} ms}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+                        <ui:ToggleSwitch Content="Automatically activate newly connected microphones" IsChecked="{Binding AutoActivateNewMicrophones}" Margin="0,12,0,0" />
+                        <Grid Margin="0,12,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Preset for new microphones" />
+                                <TextBlock Text="Applied the first time a microphone is seen." Style="{StaticResource Muted}" />
+                            </StackPanel>
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding DefaultPresetOptions}" SelectedItem="{Binding DefaultPreset}" DisplayMemberPath="Name" Width="240" VerticalAlignment="Center" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="Routing (virtual cable)" Style="{StaticResource SectionTitle}" Margin="0,18,0,8" />
+                <Border Style="{StaticResource Panel}" DataContext="{Binding Main, RelativeSource={RelativeSource AncestorType=Window}}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Muted}" Margin="0,0,0,8"
+                                   Text="The processed voice is played into the cable's playback endpoint; other apps record from the cable's microphone endpoint. Both are normally detected automatically." />
+                        <TextBlock Text="Cable playback endpoint (we send audio here)" Margin="0,4,0,4" />
+                        <ComboBox ItemsSource="{Binding RenderDevices}" SelectedItem="{Binding SelectedCableRender, Mode=TwoWay}" DisplayMemberPath="Name" />
+                        <TextBlock Text="Cable microphone endpoint (apps record from here)" Margin="0,12,0,4" />
+                        <ComboBox ItemsSource="{Binding CaptureDevices}" SelectedItem="{Binding SelectedCableCapture, Mode=TwoWay}" DisplayMemberPath="Name" />
+                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                            <ui:Button Content="Set cable as Windows default mic" Command="{Binding SetDefaultMicrophoneCommand}" />
+                            <ui:Button Content="Restore physical mic as default" Command="{Binding RestoreDefaultMicrophoneCommand}" Margin="8,0,0,0" />
+                            <ui:Button Content="Windows sound settings" Command="{Binding OpenSoundSettingsCommand}" Margin="8,0,0,0" />
+                        </StackPanel>
+                        <ui:HyperlinkButton Content="Download VB-CABLE (free virtual cable driver)" NavigateUri="https://vb-audio.com/Cable/" Margin="0,8,0,0" Padding="0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Panel}" Margin="0,8,0,0">
+                    <StackPanel>
+                        <ui:ToggleSwitch Content="Automatically make the cable the Windows default microphone while running" IsChecked="{Binding AutoSetDefaultMicrophone}" />
+                        <ui:ToggleSwitch Content="Restore the previous default microphone on exit" IsChecked="{Binding RestoreDefaultOnExit}" Margin="0,8,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="Diagnostics" Style="{StaticResource SectionTitle}" Margin="0,18,0,8" />
+                <Border Style="{StaticResource Panel}" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Version, StringFormat=Voice Changer Pro {0}}" />
+                        <TextBlock Text="{Binding LogFolder, StringFormat=Logs: {0}}" Style="{StaticResource Muted}" Margin="0,6,0,0" />
+                        <TextBlock Text="{Binding PresetFolder, StringFormat=Presets: {0}}" Style="{StaticResource Muted}" Margin="0,2,0,0" />
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <ui:Button Content="Open log folder" Click="OnOpenLogs" />
+                            <ui:Button Content="Open presets folder" Click="OnOpenPresets" Margin="8,0,0,0" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+        <Border Grid.Row="2" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="0,1,0,0" Padding="20,12">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <ui:Button Content="Cancel" Click="OnCancel" MinWidth="90" Margin="0,0,8,0" />
+                <ui:Button Content="Save" Appearance="Primary" Click="OnSave" MinWidth="90" IsDefault="True" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</ui:FluentWindow>

@@ -1,0 +1,71 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26124.0
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0F5F5ACA-612B-4139-B3F7-0F675DADAB87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceChanger.Core", "src\VoiceChanger.Core\VoiceChanger.Core.csproj", "{C3742036-65BD-4472-A2C3-95E7010A29C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceChanger.App", "src\VoiceChanger.App\VoiceChanger.App.csproj", "{04D5A37F-F90B-4CA1-9A20-483F7B137639}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{DF439085-40FB-49F8-882F-55C8D1CE18C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceChanger.Core.Tests", "tests\VoiceChanger.Core.Tests\VoiceChanger.Core.Tests.csproj", "{0350E067-FBBE-4E99-BD1C-DF346B6F4753}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C3742036-65BD-4472-A2C3-95E7010A29C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3742036-65BD-4472-A2C3-95E7010A29C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3742036-65BD-4472-A2C3-95E7010A29C7}.Debug|x64.ActiveCfg = Debug|x64
+		{C3742036-65BD-4472-A2C3-95E7010A29C7}.Debug|x64.Build.0 = Debug|x64
+		{C3742036-65BD-4472-A2C3-95E7010A29C7}.Debug|x86.ActiveCfg = Debug|x86
+		{C3742036-65BD-4472-A2C3-95E7010A29C7}.Debug|x86.Build.0 = Debug|x86
+		{C3742036-65BD-4472-A2C3-95E7010A29C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3742036-65BD-4472-A2C3-95E7010A29C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3742036-65BD-4472-A2C3-95E7010A29C7}.Release|x64.ActiveCfg = Release|x64
+		{C3742036-65BD-4472-A2C3-95E7010A29C7}.Release|x64.Build.0 = Release|x64
+		{C3742036-65BD-4472-A2C3-95E7010A29C7}.Release|x86.ActiveCfg = Release|x86
+		{C3742036-65BD-4472-A2C3-95E7010A29C7}.Release|x86.Build.0 = Release|x86
+		{04D5A37F-F90B-4CA1-9A20-483F7B137639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04D5A37F-F90B-4CA1-9A20-483F7B137639}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04D5A37F-F90B-4CA1-9A20-483F7B137639}.Debug|x64.ActiveCfg = Debug|x64
+		{04D5A37F-F90B-4CA1-9A20-483F7B137639}.Debug|x64.Build.0 = Debug|x64
+		{04D5A37F-F90B-4CA1-9A20-483F7B137639}.Debug|x86.ActiveCfg = Debug|x86
+		{04D5A37F-F90B-4CA1-9A20-483F7B137639}.Debug|x86.Build.0 = Debug|x86
+		{04D5A37F-F90B-4CA1-9A20-483F7B137639}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04D5A37F-F90B-4CA1-9A20-483F7B137639}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04D5A37F-F90B-4CA1-9A20-483F7B137639}.Release|x64.ActiveCfg = Release|x64
+		{04D5A37F-F90B-4CA1-9A20-483F7B137639}.Release|x64.Build.0 = Release|x64
+		{04D5A37F-F90B-4CA1-9A20-483F7B137639}.Release|x86.ActiveCfg = Release|x86
+		{04D5A37F-F90B-4CA1-9A20-483F7B137639}.Release|x86.Build.0 = Release|x86
+		{0350E067-FBBE-4E99-BD1C-DF346B6F4753}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0350E067-FBBE-4E99-BD1C-DF346B6F4753}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0350E067-FBBE-4E99-BD1C-DF346B6F4753}.Debug|x64.ActiveCfg = Debug|x64
+		{0350E067-FBBE-4E99-BD1C-DF346B6F4753}.Debug|x64.Build.0 = Debug|x64
+		{0350E067-FBBE-4E99-BD1C-DF346B6F4753}.Debug|x86.ActiveCfg = Debug|x86
+		{0350E067-FBBE-4E99-BD1C-DF346B6F4753}.Debug|x86.Build.0 = Debug|x86
+		{0350E067-FBBE-4E99-BD1C-DF346B6F4753}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0350E067-FBBE-4E99-BD1C-DF346B6F4753}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0350E067-FBBE-4E99-BD1C-DF346B6F4753}.Release|x64.ActiveCfg = Release|x64
+		{0350E067-FBBE-4E99-BD1C-DF346B6F4753}.Release|x64.Build.0 = Release|x64
+		{0350E067-FBBE-4E99-BD1C-DF346B6F4753}.Release|x86.ActiveCfg = Release|x86
+		{0350E067-FBBE-4E99-BD1C-DF346B6F4753}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C3742036-65BD-4472-A2C3-95E7010A29C7} = {0F5F5ACA-612B-4139-B3F7-0F675DADAB87}
+		{04D5A37F-F90B-4CA1-9A20-483F7B137639} = {0F5F5ACA-612B-4139-B3F7-0F675DADAB87}
+		{0350E067-FBBE-4E99-BD1C-DF346B6F4753} = {DF439085-40FB-49F8-882F-55C8D1CE18C3}
+	EndGlobalSection
+EndGlobal

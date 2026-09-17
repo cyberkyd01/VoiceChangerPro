@@ -1,0 +1,41 @@
+<UserControl x:Class="VoiceChanger.App.Controls.ParameterSlider"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="Root"
+             Margin="0,2,0,2">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="118" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="76" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0"
+                   Text="{Binding Label, ElementName=Root}"
+                   VerticalAlignment="Center"
+                   FontSize="12.5"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                   TextTrimming="CharacterEllipsis"
+                   ToolTip="{Binding Description, ElementName=Root}" />
+        <Slider Grid.Column="1"
+                x:Name="TheSlider"
+                Minimum="{Binding Minimum, ElementName=Root}"
+                Maximum="{Binding Maximum, ElementName=Root}"
+                Value="{Binding Value, ElementName=Root, Mode=TwoWay}"
+                SmallChange="{Binding Step, ElementName=Root}"
+                LargeChange="{Binding LargeStep, ElementName=Root}"
+                IsSnapToTickEnabled="False"
+                IsMoveToPointEnabled="True"
+                VerticalAlignment="Center"
+                Margin="4,0,8,0"
+                ToolTip="{Binding Description, ElementName=Root}" />
+        <TextBlock Grid.Column="2"
+                   Text="{Binding DisplayText, ElementName=Root}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Right"
+                   FontSize="12"
+                   FontFamily="Consolas"
+                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                   Cursor="Hand"
+                   ToolTip="Double-click to reset" />
+    </Grid>
+</UserControl>
