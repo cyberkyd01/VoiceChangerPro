@@ -16,6 +16,8 @@
   <img alt="Tests" src="https://img.shields.io/badge/tests-42%20passing-3DD68C?style=for-the-badge" />
 </p>
 
+> **Installing?** Follow the step-by-step guide: **[INSTALL.md](INSTALL.md)**
+
 ---
 
 ## What it does
@@ -80,6 +82,8 @@ voice at any moment without interrupting the call.
 
 ## Installation
 
+Step-by-step instructions, including VB-CABLE setup, building from source, updating, uninstalling and troubleshooting: **[INSTALL.md](INSTALL.md)**.
+
 **Installer (recommended)** — download `VoiceChangerPro-Setup-<version>.exe` from the
 [Releases page](https://github.com/cyberkyd01/VoiceChangerPro/releases) and run it. No administrator
 rights are needed for the app itself (per-user install). The wizard offers to download and install
@@ -104,6 +108,8 @@ folder; install VB-CABLE separately from <https://vb-audio.com/Cable/>.
 ---
 
 ## Building from source
+
+Full walkthrough (tools, execution policy, every `build.ps1` parameter): **[INSTALL.md › Build from source](INSTALL.md#3-build-from-source-optional)**.
 
 ```powershell
 # .NET 8 SDK required (https://dotnet.microsoft.com/download/dotnet/8.0)
