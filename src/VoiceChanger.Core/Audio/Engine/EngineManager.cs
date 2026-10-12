@@ -268,6 +268,12 @@ public sealed class EngineManager : IDisposable
         {
             // user picked a render device that is not detected as virtual — honour it anyway
             var r = RenderDevices.FirstOrDefault(d => d.Id == Settings.VirtualCableRenderId);
+            if (r != null && VirtualCableDetector.IsEffectProcessor(r))
+            {
+                // e.g. "Speakers (NVIDIA Broadcast)": plays into the user's headphones, never reaches other apps
+                Log.Warn("Manager", $"Ignoring saved output '{r.Name}': it plays through the speakers/headphones and is not a virtual cable");
+                r = null;
+            }
             if (r != null)
             {
                 var c = CaptureDevices.FirstOrDefault(d => d.Id == Settings.VirtualCableCaptureId);
@@ -299,8 +305,19 @@ public sealed class EngineManager : IDisposable
     private string? ResolveVirtualOutput(VoiceEngine e)
         => e.Config.VirtualOutputDeviceId ?? ActiveCable?.RenderInput.Id;
 
+    /// <summary>
+    /// Headphones/speakers for "Hear myself". An explicit choice is always honoured (if it is unplugged,
+    /// monitoring stays silent rather than jumping to speakers). Otherwise the Windows default playback
+    /// device is used, but never a virtual cable or effect processor (VB-CABLE often becomes the default
+    /// playback device when it is installed); then the first physical playback device is used.
+    /// </summary>
     private string? ResolveMonitorOutput()
-        => Settings.MonitorDeviceId ?? _devices.GetDefaultDeviceId(DataFlow.Render, Role.Multimedia);
+    {
+        if (!string.IsNullOrEmpty(Settings.MonitorDeviceId)) return Settings.MonitorDeviceId;
+        var fallback = _devices.GetDefaultDeviceId(DataFlow.Render, Role.Multimedia);
+        if (RenderDevices.FirstOrDefault(d => d.Id == fallback) is { IsVirtual: false }) return fallback;
+        return RenderDevices.FirstOrDefault(d => !d.IsVirtual)?.Id;
+    }
 
     private VoiceEngine EnsureEngine(AudioDeviceInfo mic, bool isNew)
     {

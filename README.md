@@ -67,7 +67,7 @@ voice at any moment without interrupting the call.
 - Streamed from disk (hour-long beds are fine), mixed **after** the voice chain so effects and noise removal never alter it.
 
 ### System-wide routing & device handling
-- Works with **VB-CABLE** (free; the installer sets it up), Virtual Audio Cable, VoiceMeeter, SteelSeries Sonar, NVIDIA Broadcast and Screaming Bee devices — auto-detected, manual override available.
+- Works with **VB-CABLE** (free; the installer sets it up), Virtual Audio Cable and VoiceMeeter — auto-detected, manual override available. NVIDIA Broadcast and SteelSeries Sonar are recognised and never used as the cable, because their playback side goes to your headphones.
 - One click makes the cable the **Windows default microphone** for all roles; restored on exit.
 - **Every microphone** gets its own engine and preset; **hot-plug** detection starts new headsets automatically; apply a preset to one mic or all.
 - **Live monitoring** on headphones, **5-second test clip** you can loop while tuning, live IN/OUT/gain-reduction/gate/pitch meters.

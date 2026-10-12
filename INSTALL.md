@@ -48,9 +48,10 @@ your mic → Voice Changer Pro → "CABLE Input"  (playback device: the app writ
 
 Without it the app still runs and you can hear yourself, but no other app can hear your changed voice.
 
-**Already have a virtual cable?** The app also detects Virtual Audio Cable, VoiceMeeter, SteelSeries
-Sonar, NVIDIA Broadcast and Screaming Bee devices. You can skip this step and choose that cable later
-in *Settings › Routing*.
+**Already have a virtual cable?** The app also detects Virtual Audio Cable and VoiceMeeter. You can
+skip this step and choose that cable later in *Settings › Routing*. NVIDIA Broadcast and SteelSeries
+Sonar are **not** virtual cables (what you send to them plays in your headphones), so you still need
+VB-CABLE if you use them.
 
 You can install VB-CABLE in either of two ways:
 
@@ -366,6 +367,7 @@ These steps remove what Voice Changer Pro installed. Each one is optional beyond
 | **No audio in the other app:** they hear nothing | That app uses *CABLE Output*, but Voice Changer Pro isn't running, or the mic is switched off in the app | Start Voice Changer Pro and make sure the mic is *Active*. When the app is closed, CABLE Output is silent. If you picked CABLE Output by hand in an app, switch that app back to your real mic when you stop using the voice changer |
 | Other apps hear your **real** voice | They aren't using CABLE Output, or effects are off | Select *CABLE Output* in that app (step 4) or click **Set as Windows default mic**, then restart that app. Check the **Voice effects** master switch and the mic's **Effect** switch |
 | **Echo:** the other person hears themselves | Your call app's *speaker/output* (or the Windows default playback device) is set to *CABLE Input* | Set the output to your headphones/speakers. Run `control mmsys.cpl`; on the **Playback** tab, *CABLE Input* must not be the default device |
+| You hear your **changed voice in your earphones**, but other apps don't get it | Version 1.0.0 picked a device such as *Speakers (NVIDIA Broadcast)*, *SteelSeries Sonar* or a *Virtual Surround* headset as the cable. This happens when VB-CABLE is missing or Windows hasn't rebooted since installing it | Update to the latest release. Install VB-CABLE and reboot. In *Settings › Routing* the cable's playback endpoint must be **CABLE Input** |
 | You hear yourself twice, even with monitoring off | *Listen to this device* is enabled on CABLE Output | `control mmsys.cpl` → **Recording** → *CABLE Output* → Properties → **Listen** → untick *Listen to this device* |
 | **Feedback** or howling | Monitoring plays through speakers that your mic picks up | Use headphones, lower the monitor volume, or switch off *Hear myself* |
 | **Latency:** your own voice sounds delayed in your ears | The monitoring path, about 150 ms with the default 20 ms buffers (≈ 80 ms of that is the voice processing itself) | Normal. In *Settings › Audio engine* set **Buffer size** to 10 ms (≈ 110 ms total on a fast PC). Avoid Bluetooth mics, which add their own delay. Or turn *Hear myself* off once the voice is set up. The other party isn't affected by your monitoring |

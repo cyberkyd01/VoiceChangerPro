@@ -330,8 +330,9 @@ mic as default* or simply exit the app (it restores the previous default on exit
 
 **Routing (virtual cable)**
 - The cable's playback endpoint (the app sends audio here) and microphone endpoint (apps record from
-  here). Detected automatically for VB-CABLE, Virtual Audio Cable, VoiceMeeter, SteelSeries Sonar,
-  NVIDIA Broadcast and Screaming Bee devices; can be chosen manually.
+  here). Detected automatically for VB-CABLE, Virtual Audio Cable and VoiceMeeter; can be chosen
+  manually. NVIDIA Broadcast and SteelSeries Sonar are never used as the cable, because their playback
+  side goes straight to your headphones.
 - *Set cable as Windows default mic*, *Restore physical mic as default*, *Windows sound settings*.
 - *Automatically make the cable the default microphone while running* and *Restore the previous
   default microphone on exit*.
@@ -403,6 +404,11 @@ sound is dialled in; the other party is not affected by your monitoring.
 **The voice sounds robotic or "double"**
 Pitch or formant is pushed too far for your voice. Stay within ±5 semitones of pitch and ±2.5 of
 formant for the most natural result; use EQ, breath and rasp for character instead.
+
+**My changed voice plays in my earphones, but other apps don't hear it**
+The cable's playback endpoint is a device that plays to your headphones (for example *Speakers
+(NVIDIA Broadcast)*, *SteelSeries Sonar* or a *Virtual Surround* headset) instead of *CABLE Input*.
+Update to the latest version, install VB-CABLE and reboot, then check *Settings › Routing*.
 
 **Feedback / howling**
 Monitoring is going to speakers that the microphone can hear. Use headphones or lower the monitor volume.
