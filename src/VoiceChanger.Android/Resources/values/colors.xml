@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Same palette as the Windows app (see Ui/Palette.cs for the code-side copy). -->
+<resources>
+  <color name="vc_bg">#171A20</color>
+  <color name="vc_nav">#13161B</color>
+  <color name="vc_card">#1E2229</color>
+  <color name="vc_border">#2C313A</color>
+  <color name="vc_accent">#5865F2</color>
+  <color name="vc_success">#3DD68C</color>
+  <color name="vc_warning">#F5A623</color>
+  <color name="vc_danger">#F04747</color>
+  <color name="vc_muted">#8A8F98</color>
+  <color name="vc_text">#E9ECF1</color>
+  <color name="ic_launcher_bg_start">#5865F2</color>
+  <color name="ic_launcher_bg_end">#1E96C0</color>
+</resources>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Always-dark theme. The activity draws edge to edge and pads itself for the system bars. -->
+  <style name="AppTheme" parent="android:Theme.Material.NoActionBar">
+    <item name="android:colorPrimary">@color/vc_card</item>
+    <item name="android:colorPrimaryDark">@color/vc_bg</item>
+    <item name="android:colorAccent">@color/vc_accent</item>
+    <item name="android:colorBackground">@color/vc_bg</item>
+    <item name="android:windowBackground">@color/vc_bg</item>
+    <item name="android:statusBarColor">@android:color/transparent</item>
+    <item name="android:navigationBarColor">@color/vc_nav</item>
+    <item name="android:textColorPrimary">@color/vc_text</item>
+    <item name="android:textColorSecondary">@color/vc_muted</item>
+    <item name="android:colorControlActivated">@color/vc_accent</item>
+    <item name="android:alertDialogTheme">@style/AppDialog</item>
+  </style>
+
+  <style name="AppDialog" parent="android:Theme.Material.Dialog.Alert">
+    <item name="android:colorAccent">@color/vc_accent</item>
+    <item name="android:colorBackground">@color/vc_card</item>
+    <item name="android:colorBackgroundFloating">@color/vc_card</item>
+    <item name="android:textColorPrimary">@color/vc_text</item>
+    <item name="android:textColorSecondary">@color/vc_muted</item>
+  </style>
+</resources>

@@ -1,0 +1,73 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Voice Changer Pro for Android (plain .NET for Android, no MAUI).
+    Uses the same voice engine and presets as the Windows app through VoiceChanger.Shared.
+
+    Android does not allow an app to replace the microphone that other apps hear, so this app
+    offers live monitoring in headphones plus record / apply voice / share.
+
+    Build:   dotnet build -c Debug
+    Release: dotnet publish -c Release   (signed with signing/voicechangerpro-release.keystore when present)
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>26</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <!-- Not "VoiceChanger.Android": a namespace ending in .Android would hide the Android.* bindings. -->
+    <RootNamespace>VoiceChangerPro.AndroidApp</RootNamespace>
+    <AssemblyName>VoiceChangerPro</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <ApplicationId>com.cyberkyd.voicechangerpro</ApplicationId>
+    <ApplicationTitle>Voice Changer Pro</ApplicationTitle>
+    <ApplicationDisplayVersion>1.0.1</ApplicationDisplayVersion>
+    <ApplicationVersion>2</ApplicationVersion>
+
+    <!-- 64-bit phones and the x86_64 emulator. -->
+    <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
+    <SelfContained>true</SelfContained>
+    <TrimMode>full</TrimMode>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <!-- A plain APK that people can download and install directly (no Play Store bundle). -->
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <!--
+    Release signing. The keystore and its password live in <repo>/signing/, which is git-ignored.
+    apksigner reads the password itself, from the ANDROID_KEYSTORE_PASSWORD environment variable when it is
+    set (e.g. on CI), otherwise from signing/keystore-password.txt. The password never appears in this file
+    or on the command line.
+
+    keystore-password.txt holds the same password on two lines: apksigner reads one line per use of a
+    file, first for the keystore and then for the key (both are the same in a PKCS12 keystore).
+  -->
+  <PropertyGroup>
+    <VcpSigningDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../signing'))</VcpSigningDir>
+    <VcpKeystore>$(VcpSigningDir)/voicechangerpro-release.keystore</VcpKeystore>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' and Exists('$(VcpKeystore)')">
+    <AndroidKeyStore>true</AndroidKeyStore>
+    <AndroidSigningKeyStore>$(VcpKeystore)</AndroidSigningKeyStore>
+    <AndroidSigningKeyAlias>voicechangerpro</AndroidSigningKeyAlias>
+    <AndroidSigningStorePass Condition="'$(ANDROID_KEYSTORE_PASSWORD)' != ''">env:ANDROID_KEYSTORE_PASSWORD</AndroidSigningStorePass>
+    <AndroidSigningStorePass Condition="'$(ANDROID_KEYSTORE_PASSWORD)' == ''">file:$(VcpSigningDir)/keystore-password.txt</AndroidSigningStorePass>
+    <AndroidSigningKeyPass>$(AndroidSigningStorePass)</AndroidSigningKeyPass>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VoiceChanger.Shared\VoiceChanger.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      VoiceProfile.Clone/CopyFrom copy every property through reflection. Keep the whole shared
+      engine assembly so full trimming can never drop a property setter.
+    -->
+    <TrimmerRootAssembly Include="VoiceChanger.Shared" RootMode="All" />
+  </ItemGroup>
+</Project>

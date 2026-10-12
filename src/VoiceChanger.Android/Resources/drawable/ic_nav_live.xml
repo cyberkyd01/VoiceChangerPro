@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Microphone (Live tab). Tinted in code. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M9,5.5 A3,3 0 0 1 15,5.5 V11 A3,3 0 0 1 9,11 Z" />
+  <path
+      android:strokeColor="#FFFFFFFF"
+      android:strokeWidth="2"
+      android:strokeLineCap="round"
+      android:fillColor="#00000000"
+      android:pathData="M5.5,11 A6.5,6.5 0 0 0 18.5,11 M12,17.5 V21 M8.5,21.5 H15.5" />
+</vector>

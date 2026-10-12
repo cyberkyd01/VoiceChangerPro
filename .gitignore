@@ -10,3 +10,6 @@ installer/Output/
 TestResults/
 *.lnk
 dist-mac/
+
+# Android release signing key and password (never commit)
+signing/

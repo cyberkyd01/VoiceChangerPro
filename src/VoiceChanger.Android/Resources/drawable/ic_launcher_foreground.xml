@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- White microphone of the Voice Changer Pro icon, laid out for the 108dp adaptive-icon grid. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M44.16,38.25 A9.84,9.84 0 0 1 63.84,38.25 V51.75 A9.84,9.84 0 0 1 44.16,51.75 Z" />
+  <path
+      android:strokeColor="#FFFFFFFF"
+      android:strokeWidth="4.5"
+      android:strokeLineCap="round"
+      android:fillColor="#00000000"
+      android:pathData="M36,54 A18,18 0 0 0 72,54 M54,72 V78.75 M43.875,80.44 H64.125" />
+</vector>

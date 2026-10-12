@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bulleted list (Voices tab). Tinted in code. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M3.5,6 A1.75,1.75 0 1 0 7,6 A1.75,1.75 0 1 0 3.5,6 Z M3.5,12 A1.75,1.75 0 1 0 7,12 A1.75,1.75 0 1 0 3.5,12 Z M3.5,18 A1.75,1.75 0 1 0 7,18 A1.75,1.75 0 1 0 3.5,18 Z" />
+  <path
+      android:strokeColor="#FFFFFFFF"
+      android:strokeWidth="2"
+      android:strokeLineCap="round"
+      android:fillColor="#00000000"
+      android:pathData="M10,6 H20.5 M10,12 H20.5 M10,18 H20.5" />
+</vector>
