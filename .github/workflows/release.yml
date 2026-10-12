@@ -73,7 +73,7 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with: { dotnet-version: '10.0.x' }
       - name: Build, self-test, sign and package
-        run: ./build-mac.sh
+        run: bash ./build-mac.sh
       - name: Upload
         if: env.PUBLISH == 'true'
         run: |
