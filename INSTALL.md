@@ -101,7 +101,7 @@ Choose **one** of these options.
    ```powershell
    $setup = "$env:USERPROFILE\Downloads\VoiceChangerPro-Windows-Setup.exe"
    curl.exe -L -o $setup https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.1.1/VoiceChangerPro-Windows-Setup.exe
-   (Get-FileHash $setup -Algorithm SHA256).Hash -eq '898C95401BC0E540DB17DD8C06F0C18671D8D8A9D8078C8329B93733A7DB12B8'
+   (Get-FileHash $setup -Algorithm SHA256).Hash -eq 'A97F861D4A5F4DB1EA5DD7E1A5F821E54CB0A99AB52E5B14BE6467BA0AB5B53D'
    ```
 
    The last line must print `True`. If it prints `False`, delete the file and download it again.
@@ -136,7 +136,7 @@ writes nothing outside your user profile. Install VB-CABLE separately ([step 1](
 $dir = "$env:USERPROFILE\VoiceChangerPro-Portable"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
 curl.exe -L -o "$dir\VoiceChangerPro.exe" https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.1.1/VoiceChangerPro-Windows-Portable.exe
-(Get-FileHash "$dir\VoiceChangerPro.exe" -Algorithm SHA256).Hash -eq 'AEAB593AE6255519D1CD69DCBD71CF6FECDFF992CA310512E2F66188EB95D356'
+(Get-FileHash "$dir\VoiceChangerPro.exe" -Algorithm SHA256).Hash -eq 'F81284CFFBEF11AF242E7931AD3F99FFB9CF78613FC29696BC7DCEF483D66C35'
 ```
 
 The last line must print `True`. Start it with:
@@ -225,7 +225,7 @@ test stops the build. These are the parameters it accepts:
 |---|---|---|
 | `.\build.ps1` | Restore, build (Release), run unit tests | `src\VoiceChanger.App\bin\Release\net8.0-windows\` |
 | `.\build.ps1 -Publish` | The above, plus a self-contained single-file x64 build that needs no .NET on the target PC | `dist\VoiceChangerPro.exe` (+ `dist\README.md`) |
-| `.\build.ps1 -Publish -Installer` | The above, plus the Windows installer (needs Inno Setup 6). `-Installer` needs `dist\VoiceChangerPro.exe`, so pass `-Publish` with it | `installer\Output\VoiceChangerPro-Setup-1.1.0.exe` |
+| `.\build.ps1 -Publish -Installer` | The above, plus the Windows installer (needs Inno Setup 6). `-Installer` needs `dist\VoiceChangerPro.exe`, so pass `-Publish` with it | `installer\Output\VoiceChangerPro-Setup-1.1.1.exe` |
 | `.\build.ps1 -Integration` | Also runs the real-device tests (sets `VCP_INTEGRATION=1`, opens your default mic and speakers) | — |
 | `-Configuration Debug` | Builds Debug instead of the default `Release`. You can combine it with any of the above. The script's help text says Debug, but the actual default is Release | — |
 
@@ -246,7 +246,7 @@ and finally `Done.`
 
 You can also double-click **`Start Voice Changer Pro.cmd`** in the repository folder. It launches
 `dist\VoiceChangerPro.exe`, so run `-Publish` first. If you built the installer, run
-`installer\Output\VoiceChangerPro-Setup-1.1.0.exe` and follow [Option A](#option-a-installer-recommended) from the *Start the installer* part.
+`installer\Output\VoiceChangerPro-Setup-1.1.1.exe` and follow [Option A](#option-a-installer-recommended) from the *Start the installer* part.
 
 Install VB-CABLE as in [step 1](#1-install-the-virtual-audio-cable-vb-cable) (manual option) if you haven't yet.
 
