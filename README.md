@@ -5,18 +5,34 @@
 <h1 align="center">Voice Changer Pro by Cyberkyd</h1>
 
 <p align="center">
-  <b>Real-time, system-wide voice changer for Windows.</b><br/>
+  <b>Real-time, system-wide voice changer for Windows and Mac, plus an Android app.</b><br/>
   Ultra-realistic voices, studio-grade clean-up and a background music bed — heard by every app that uses your microphone.
 </p>
 
 <p align="center">
   <a href="https://github.com/cyberkyd01/VoiceChangerPro/releases/latest"><img alt="Download" src="https://img.shields.io/badge/Download-Windows%20installer-5865F2?style=for-the-badge&logo=windows" /></a>
-  <img alt="Platform" src="https://img.shields.io/badge/Windows-10%20%7C%2011%20x64-0078D6?style=for-the-badge&logo=windows" />
+  <img alt="Windows" src="https://img.shields.io/badge/Windows-10%20%7C%2011%20x64-0078D6?style=for-the-badge&logo=windows" />
+  <img alt="macOS" src="https://img.shields.io/badge/macOS-Apple%20Silicon-333333?style=for-the-badge&logo=apple" />
+  <img alt="Android" src="https://img.shields.io/badge/Android-8%2B-3DDC84?style=for-the-badge&logo=android" />
   <img alt=".NET" src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet" />
-  <img alt="Tests" src="https://img.shields.io/badge/tests-42%20passing-3DD68C?style=for-the-badge" />
+  <img alt="Tests" src="https://img.shields.io/badge/tests-57%20passing-3DD68C?style=for-the-badge" />
 </p>
 
-> **Installing?** Follow the step-by-step guide: **[INSTALL.md](INSTALL.md)**
+> **Installing?** Follow the step-by-step guide for your device:
+> **[Windows](INSTALL.md)** · **[Mac](INSTALL-MAC.md)** · **[Android](INSTALL-ANDROID.md)**
+
+## Downloads
+
+All files are on the [latest release](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest) page, under **Assets**.
+
+| Device | File | What you get |
+|---|---|---|
+| **Windows** 10 / 11, 64-bit | `VoiceChangerPro-Setup-<version>.exe` (installer, recommended) or `VoiceChangerPro.exe` (portable) | System-wide: every app hears your changed voice through the free VB-CABLE virtual microphone |
+| **Mac** with an Apple chip (M1, M2, M3, M4…), macOS 12 or newer | `VoiceChangerPro-<version>-macOS-AppleSilicon.dmg` | System-wide: every app hears your changed voice through the free BlackHole virtual microphone |
+| **Android** 8 or newer | `VoiceChangerPro-<version>-android.apk` | Live voice change in your headphones, and record → change → share clips to WhatsApp, Telegram and other apps. Not system-wide, because Android does not let one app replace the microphone of another |
+
+All three use the same voice engine and the same 78 built-in voices. Custom presets, the background
+audio bed and several microphones at once are Windows-only for now.
 
 ---
 
@@ -76,7 +92,7 @@ voice at any moment without interrupting the call.
 - Self-contained single-file build (no .NET install), per-user installer with uninstaller, tray icon with quick toggles, start with Windows, single-instance guard.
 - Atomic JSON persistence with schema migrations, rotating logs, crash-safe audio callbacks, automatic recovery when devices vanish and return, inaudible clock-drift compensation.
 - **Interference detector**: recognises other voice-changer drivers that silence microphones system-wide (NCH Voxal, MorphVOX, AV Voice Changer) and tells you exactly how to fix it.
-- 42 automated tests: pitch-ratio accuracy, formant preservation, level stability, noise-suppression SNR, preset library rules, persistence, background decoding, real-device smoke tests.
+- 57 automated tests: pitch-ratio accuracy, formant preservation, level stability, noise-suppression SNR, preset library rules, device classification, persistence, background decoding, real-device smoke tests.
 
 ---
 

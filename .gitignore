@@ -9,3 +9,4 @@ installer/Output/
 *.log
 TestResults/
 *.lnk
+dist-mac/

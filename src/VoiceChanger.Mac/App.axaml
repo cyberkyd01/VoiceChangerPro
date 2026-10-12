@@ -1,0 +1,57 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="VoiceChanger.Mac.App"
+             Name="Voice Changer Pro"
+             RequestedThemeVariant="Dark">
+  <Application.Resources>
+    <SolidColorBrush x:Key="AccentBrush" Color="#5865F2" />
+    <SolidColorBrush x:Key="SuccessBrush" Color="#3DD68C" />
+    <SolidColorBrush x:Key="WarningBrush" Color="#F5A623" />
+    <SolidColorBrush x:Key="DangerBrush" Color="#F04747" />
+    <SolidColorBrush x:Key="MutedBrush" Color="#8A8F98" />
+    <SolidColorBrush x:Key="CardBrush" Color="#1E2229" />
+    <SolidColorBrush x:Key="CardBorderBrush" Color="#2C313A" />
+    <SolidColorBrush x:Key="PanelBrush" Color="#171A20" />
+    <SolidColorBrush x:Key="SelectedBrush" Color="#262C46" />
+    <Color x:Key="SystemAccentColor">#5865F2</Color>
+    <Color x:Key="SystemAccentColorLight1">#6E79F4</Color>
+    <Color x:Key="SystemAccentColorLight2">#858EF6</Color>
+    <Color x:Key="SystemAccentColorDark1">#4752C4</Color>
+  </Application.Resources>
+  <Application.Styles>
+    <FluentTheme />
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{StaticResource CardBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="10" />
+      <Setter Property="Padding" Value="14" />
+    </Style>
+    <Style Selector="TextBlock.h">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Margin" Value="0,0,0,8" />
+    </Style>
+    <Style Selector="TextBlock.muted">
+      <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="TextBlock.label">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.accent">
+      <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.accent:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#6E79F4" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="ComboBox">
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="FontSize" Value="12" />
+    </Style>
+  </Application.Styles>
+</Application>

@@ -1,0 +1,201 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:VoiceChanger.Mac.ViewModels"
+        xmlns:v="using:VoiceChanger.Mac.Views"
+        x:Class="VoiceChanger.Mac.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="Voice Changer Pro"
+        Width="1200" Height="780" MinWidth="1000" MinHeight="640"
+        Background="{StaticResource PanelBrush}"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="52">
+  <Grid RowDefinitions="Auto,Auto,*" Margin="16,0,16,16">
+
+    <!-- Header (sits in the title bar area, right of the traffic lights) -->
+    <Grid Grid.Row="0" Height="56" ColumnDefinitions="Auto,Auto,*,Auto,Auto" Margin="64,0,0,0">
+      <v:AppLogo Width="30" Height="30" VerticalAlignment="Center" IsHitTestVisible="False" />
+      <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False">
+        <TextBlock Text="Voice Changer Pro" FontSize="16" FontWeight="SemiBold" />
+        <TextBlock Classes="muted" FontSize="11">
+          <Run Text="by Cyberkyd · macOS · " /><Run Text="{Binding VersionText}" />
+        </TextBlock>
+      </StackPanel>
+      <Border Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="18,0,0,0"
+              CornerRadius="10" Padding="10,3" IsHitTestVisible="False"
+              Background="{Binding IsRunning, Converter={x:Static v:Converters.RunningBrush}}">
+        <TextBlock Text="{Binding StatusText}" FontSize="11" FontWeight="SemiBold" Foreground="White" />
+      </Border>
+      <ToggleSwitch Grid.Column="3" IsChecked="{Binding MasterEnabled}" OnContent="Voice effects on" OffContent="Voice effects off (real voice)"
+                    VerticalAlignment="Center" Margin="0,0,16,0" FontSize="12" />
+      <Button Grid.Column="4" Command="{Binding ToggleRunningCommand}" MinWidth="110" Height="34" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+              Classes.accent="{Binding !IsRunning}" FontWeight="SemiBold"
+              Content="{Binding IsRunning, Converter={x:Static v:Converters.StartStopText}}" />
+    </Grid>
+
+    <!-- Warnings -->
+    <StackPanel Grid.Row="1" Spacing="8">
+      <Border IsVisible="{Binding Warning, Converter={x:Static ObjectConverters.IsNotNull}}" Background="#3A2A12" BorderBrush="{StaticResource WarningBrush}" BorderThickness="1" CornerRadius="8" Padding="12,8" Margin="0,0,0,8">
+        <TextBlock Text="{Binding Warning}" TextWrapping="Wrap" FontSize="12" />
+      </Border>
+      <Border IsVisible="{Binding ShowMicPermissionHelp}" Background="#3A1E22" BorderBrush="{StaticResource DangerBrush}" BorderThickness="1" CornerRadius="8" Padding="12,8" Margin="0,0,0,8">
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBlock TextWrapping="Wrap" FontSize="12" VerticalAlignment="Center"
+                     Text="No sound is coming from the microphone. Allow Voice Changer Pro in System Settings › Privacy &amp; Security › Microphone, then click Refresh. Also check the microphone is not muted." />
+          <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="12,0,0,0">
+            <Button Content="Open Microphone privacy" Command="{Binding OpenMicrophonePrivacyCommand}" FontSize="12" />
+            <Button Content="Refresh" Command="{Binding RefreshCommand}" FontSize="12" />
+          </StackPanel>
+        </Grid>
+      </Border>
+    </StackPanel>
+
+    <Grid Grid.Row="2" ColumnDefinitions="324,2,*,14,300">
+
+      <!-- Left: routing and clean-up -->
+      <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="12" Margin="0,0,12,0">
+          <Border Classes="card">
+            <StackPanel Spacing="8">
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Classes="h" Text="Your microphone" Margin="0" />
+                <Button Grid.Column="1" Content="Refresh" Command="{Binding RefreshCommand}" FontSize="11" Padding="8,2" />
+              </Grid>
+              <ComboBox ItemsSource="{Binding Microphones}" SelectedItem="{Binding SelectedMicrophone}" />
+              <Grid ColumnDefinitions="Auto,*" >
+                <TextBlock Classes="muted" Text="IN" Width="30" />
+                <v:LevelMeter Grid.Column="1" Height="8" Level="{Binding InputLevel}" VerticalAlignment="Center" />
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <Border Classes="card">
+            <StackPanel Spacing="8">
+              <TextBlock Classes="h" Text="Virtual microphone (what apps hear)" Margin="0" />
+              <ComboBox ItemsSource="{Binding Cables}" SelectedItem="{Binding SelectedCable}" IsVisible="{Binding !CableMissing}" />
+              <TextBlock Classes="muted" Text="{Binding CableStatus}" Foreground="{Binding CableOk, Converter={x:Static v:Converters.OkBrush}}" />
+              <Button Content="Get BlackHole 2ch (free)" Command="{Binding OpenBlackHoleCommand}" IsVisible="{Binding CableMissing}" Classes="accent" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+              <TextBlock Classes="muted" IsVisible="{Binding CableMissing}" Text="After installing, click Refresh. Homebrew users can run: brew install blackhole-2ch" />
+              <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding !CableMissing}">
+                <Button Content="Use in all apps" Command="{Binding MakeCableDefaultCommand}" FontSize="12" />
+                <Button Content="Restore real mic" Command="{Binding RestoreDefaultMicrophoneCommand}" FontSize="12" />
+              </StackPanel>
+              <CheckBox IsChecked="{Binding AutoSetDefaultMicrophone}" FontSize="12" IsVisible="{Binding !CableMissing}"
+                        Content="Make it the Mac's microphone while running" />
+            </StackPanel>
+          </Border>
+
+          <Border Classes="card">
+            <StackPanel Spacing="8">
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Classes="h" Text="Hear myself" Margin="0" VerticalAlignment="Center" />
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding MonitorEnabled}" OnContent="" OffContent="" />
+              </Grid>
+              <ComboBox ItemsSource="{Binding MonitorOutputs}" SelectedItem="{Binding SelectedMonitor}" />
+              <v:ParamSlider Label="Volume" Minimum="0" Maximum="1.5" ResetValue="0.8" Format="{}{0:P0}" Value="{Binding MonitorVolume}" />
+              <TextBlock Classes="muted" Text="Use headphones. Speakers let the microphone hear itself and cause feedback." />
+            </StackPanel>
+          </Border>
+
+          <Border Classes="card">
+            <StackPanel Spacing="4">
+              <TextBlock Classes="h" Text="Clean-up (all voices)" />
+              <v:ParamSlider Label="Noise reduction" Minimum="0" Maximum="1" ResetValue="0.5" Format="{}{0:P0}" Value="{Binding NoiseReduction}" />
+              <v:ParamSlider Label="Voice isolation" Minimum="0" Maximum="1" Format="{}{0:P0}" Value="{Binding VoiceIsolation}" />
+              <v:ParamSlider Label="Voice volume" Minimum="0" Maximum="2" ResetValue="1" Format="{}{0:P0}" Value="{Binding VoiceVolume}" />
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </ScrollViewer>
+
+      <!-- Middle: voice library -->
+      <Border Grid.Column="2" Classes="card" Padding="14,14,6,14">
+        <Grid RowDefinitions="Auto,Auto,Auto,*">
+          <TextBlock Classes="h" Text="Voices" />
+          <TextBox Grid.Row="1" Watermark="Search voices (e.g. deep, female, radio)" Text="{Binding SearchText}" Margin="0,0,8,8" FontSize="12" />
+          <ListBox Grid.Row="2" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" Background="Transparent" Margin="0,0,0,8">
+            <ListBox.ItemsPanel>
+              <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.Styles>
+              <Style Selector="ListBoxItem">
+                <Setter Property="Padding" Value="10,4" />
+                <Setter Property="Margin" Value="0,0,6,6" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Background" Value="#262A33" />
+              </Style>
+              <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+              </Style>
+            </ListBox.Styles>
+          </ListBox>
+          <ListBox Grid.Row="3" ItemsSource="{Binding Presets}" SelectedItem="{Binding SelectedPreset}" Background="Transparent">
+            <ListBox.Styles>
+              <Style Selector="ListBoxItem">
+                <Setter Property="Padding" Value="8,6" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="Margin" Value="0,0,8,2" />
+              </Style>
+              <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                <Setter Property="Background" Value="{StaticResource SelectedBrush}" />
+              </Style>
+            </ListBox.Styles>
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="vm:PresetItem">
+                <Grid ColumnDefinitions="36,*">
+                  <TextBlock Text="{Binding Icon}" FontSize="20" VerticalAlignment="Center" />
+                  <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13" />
+                    <TextBlock Text="{Binding Description}" Classes="muted" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                  </StackPanel>
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Grid>
+      </Border>
+
+      <!-- Right: voice character -->
+      <ScrollViewer Grid.Column="4" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="12">
+          <Border Classes="card">
+            <StackPanel Spacing="4">
+              <TextBlock Classes="muted" Text="CURRENT VOICE" FontSize="10" />
+              <TextBlock Text="{Binding ActivePresetName}" FontSize="17" FontWeight="SemiBold" TextWrapping="Wrap" />
+              <TextBlock Classes="muted" Text="{Binding ActivePresetDescription}" Margin="0,0,0,8" />
+              <v:ParamSlider Label="Pitch (semitones)" Minimum="-12" Maximum="12" Format="{}{0:+0.0;-0.0;0}" Value="{Binding Pitch}" />
+              <v:ParamSlider Label="Formant (voice size)" Minimum="-6" Maximum="6" Format="{}{0:+0.0;-0.0;0}" Value="{Binding Formant}" />
+              <v:ParamSlider Label="Breathiness" Minimum="0" Maximum="1" Format="{}{0:P0}" Value="{Binding Breathiness}" />
+              <v:ParamSlider Label="Rasp" Minimum="0" Maximum="1" Format="{}{0:P0}" Value="{Binding Rasp}" />
+              <v:ParamSlider Label="Room reverb" Minimum="0" Maximum="1" Format="{}{0:P0}" Value="{Binding Reverb}" />
+              <v:ParamSlider Label="Output gain (dB)" Minimum="-12" Maximum="12" Format="{}{0:+0.0;-0.0;0}" Value="{Binding OutputGain}" />
+              <Button Content="Reset to preset" Command="{Binding ResetToPresetCommand}" FontSize="12" Margin="0,6,0,0" />
+            </StackPanel>
+          </Border>
+          <Border Classes="card">
+            <StackPanel Spacing="8">
+              <TextBlock Classes="h" Text="Output" Margin="0" />
+              <Grid ColumnDefinitions="Auto,*">
+                <TextBlock Classes="muted" Text="OUT" Width="34" />
+                <v:LevelMeter Grid.Column="1" Height="8" Level="{Binding OutputLevel}" VerticalAlignment="Center" />
+              </Grid>
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Classes="muted" Text="Your pitch" />
+                <TextBlock Grid.Column="1" Text="{Binding PitchText}" FontSize="12" />
+              </Grid>
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Classes="muted" Text="Delay" />
+                <TextBlock Grid.Column="1" Text="{Binding LatencyText}" FontSize="12" />
+              </Grid>
+              <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+                <Button Content="Sound settings" Command="{Binding OpenSoundSettingsCommand}" FontSize="11" />
+                <Button Content="Logs" Command="{Binding OpenLogsCommand}" FontSize="11" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+  </Grid>
+</Window>
