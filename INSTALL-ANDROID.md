@@ -33,11 +33,12 @@ Live mode is for hearing yourself, practising a voice, or playing with friends i
 
 ## Step 1. Download the app
 
-1. On your phone, open this page in your browser (for example Chrome):
-   **https://github.com/cyberkyd01/VoiceChangerPro/releases/latest**
-2. Scroll down to **Assets**. Tap **Assets** if the list is closed.
-3. Tap **VoiceChangerPro-1.0.1-android.apk** (the number may be higher for newer versions).
-4. If the browser asks whether to keep or download the file, tap **Download** or **Download anyway**.
+1. On your phone, open this direct link in your browser (for example Chrome). It always downloads the newest version:
+   **https://github.com/cyberkyd01/VoiceChangerPro/releases/latest/download/VoiceChangerPro-Android.apk**
+2. If the browser asks whether to keep or download the file, tap **Download** or **Download anyway**.
+
+You can also open **https://github.com/cyberkyd01/VoiceChangerPro/releases/latest**, scroll down to
+**Assets** and tap **VoiceChangerPro-Android.apk**.
 
 The file is an "APK". That is the normal install file for Android apps.
 
@@ -142,12 +143,12 @@ The app remembers your voice and settings the next time you open it.
 
 **"App not installed" during install**
 
-- An older copy signed differently may already be on your phone. Uninstall Voice Changer Pro first, then install again.
+- A copy signed differently may already be on your phone, for example one you built yourself. Uninstall Voice Changer Pro first, then install again.
 - Make sure there is enough free space.
 
 ## Update or remove the app
 
-- **Update:** download the newer APK from the same Releases page and install it over the old one.
+- **Update:** download the APK again from the direct link in Step 1 and install it over the old one.
   Your voices and settings are kept.
 - **Remove:** press and hold the app icon, then tap **Uninstall**.
   Clips you saved in Music > Voice Changer Pro are kept.

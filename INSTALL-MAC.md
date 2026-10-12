@@ -34,8 +34,9 @@ until it finds it. If BlackHole doesn't appear after installing, restart the Mac
 
 ## Step 2: Download and install Voice Changer Pro
 
-1. Open the [latest release](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest) and,
-   under **Assets**, download `VoiceChangerPro-<version>-macOS-AppleSilicon.dmg`.
+1. Download **[VoiceChangerPro-Mac-AppleSilicon.dmg](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest/download/VoiceChangerPro-Mac-AppleSilicon.dmg)**
+   (direct link to the newest version). It is also listed under **Assets** on the
+   [latest release](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest) page.
 2. Double-click the downloaded file. Drag **Voice Changer Pro** onto the **Applications** folder.
 3. Eject the *Voice Changer Pro* disk in Finder.
 
@@ -43,7 +44,7 @@ until it finds it. If BlackHole doesn't appear after installing, restart the Mac
 with the SHA-256 value printed on the release page.
 
 ```bash
-shasum -a 256 ~/Downloads/VoiceChangerPro-*-macOS-AppleSilicon.dmg
+shasum -a 256 ~/Downloads/VoiceChangerPro-Mac-AppleSilicon.dmg
 ```
 
 ## Step 3: Open it the first time

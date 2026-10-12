@@ -5,7 +5,8 @@ name: Release
 #   Windows  portable exe + Inno Setup installer   (windows-latest)
 #   macOS    Apple Silicon .dmg                     (macos-latest, arm64)
 #   Android  signed .apk                            (ubuntu-latest; needs the ANDROID_KEYSTORE_BASE64
-#                                                    and ANDROID_KEYSTORE_PASSWORD repository secrets)
+#                                                    and ANDROID_KEYSTORE_PASSWORD repository secrets,
+#                                                    made from signing/ in the project folder)
 # A final job writes the SHA-256 of every file into the release notes.
 # Run it by hand with "publish: false" to only check that everything builds.
 on:
@@ -57,8 +58,11 @@ jobs:
         if: env.PUBLISH == 'true'
         shell: pwsh
         run: |
+          # stable, platform-named files so README links to releases/latest/download/<name> always work
           $setup = (Get-ChildItem installer\Output -Filter "VoiceChangerPro-Setup-*.exe" | Select-Object -First 1).FullName
-          gh release upload $env:TAG $setup dist\VoiceChangerPro.exe --clobber -R $env:GITHUB_REPOSITORY
+          Copy-Item $setup VoiceChangerPro-Windows-Setup.exe
+          Copy-Item dist\VoiceChangerPro.exe VoiceChangerPro-Windows-Portable.exe
+          gh release upload $env:TAG VoiceChangerPro-Windows-Setup.exe VoiceChangerPro-Windows-Portable.exe --clobber -R $env:GITHUB_REPOSITORY
 
   macos:
     needs: release
@@ -72,11 +76,59 @@ jobs:
         run: ./build-mac.sh
       - name: Upload
         if: env.PUBLISH == 'true'
-        run: gh release upload "$TAG" dist-mac/*.dmg --clobber -R "$GITHUB_REPOSITORY"
+        run: |
+          cp dist-mac/*.dmg VoiceChangerPro-Mac-AppleSilicon.dmg
+          gh release upload "$TAG" VoiceChangerPro-Mac-AppleSilicon.dmg --clobber -R "$GITHUB_REPOSITORY"
+
+  android:
+    needs: release
+    runs-on: ubuntu-latest
+    env:
+      # SHA-256 of the release signing certificate. Every APK must carry it, otherwise phones refuse updates.
+      CERT_SHA256: b3f2d8263483ef05f53cff5fbf0618bdf7107b45d9915e1ae251f468d1b66789
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: '${{ env.TAG }}' }
+      - uses: actions/setup-java@v4
+        with: { distribution: microsoft, java-version: '21' }
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '10.0.x' }
+      - name: Install the Android workload and SDK packages
+        run: |
+          dotnet workload install android
+          dotnet build src/VoiceChanger.Android -t:InstallAndroidDependencies -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME" -p:AcceptAndroidSDKLicenses=True
+      - name: Restore the signing key
+        id: key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::ANDROID_KEYSTORE_BASE64 is not set: the APK is only built to check it compiles, and is not uploaded. Upload a locally signed APK instead (see INSTALL-ANDROID.md, Build from source)."
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          mkdir -p signing
+          echo "$KEYSTORE_BASE64" | base64 -d > signing/voicechangerpro-release.keystore
+          echo "signed=true" >> "$GITHUB_OUTPUT"
+      - name: Build the APK
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: dotnet publish src/VoiceChanger.Android -c Release -o out-android -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME"
+      - name: Check the signature
+        if: steps.key.outputs.signed == 'true'
+        run: |
+          apk=$(ls out-android/*-Signed.apk | head -1)
+          apksigner=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
+          "$apksigner" verify --print-certs "$apk" | tee certs.txt
+          grep -qi "SHA-256 digest: $CERT_SHA256" certs.txt || { echo "::error::APK is not signed with the release key"; exit 1; }
+          cp "$apk" VoiceChangerPro-Android.apk
+      - name: Upload
+        if: env.PUBLISH == 'true' && steps.key.outputs.signed == 'true'
+        run: gh release upload "$TAG" VoiceChangerPro-Android.apk --clobber -R "$GITHUB_REPOSITORY"
 
   notes:
-    needs: [windows, macos]
-    if: always() && needs.windows.result == 'success' && needs.macos.result == 'success'
+    needs: [windows, macos, android]
+    if: always() && needs.windows.result == 'success' && needs.macos.result == 'success' && needs.android.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Write file hashes into the release notes
@@ -92,9 +144,9 @@ jobs:
             echo "|---|---|---|"
             for f in *; do
               case "$f" in
-                *Setup*.exe) for="Windows installer (recommended)";;
-                *.exe) for="Windows portable";;
-                *.dmg) for="Mac with Apple chip";;
+                *Setup*.exe) for="Windows 10/11 installer (recommended)";;
+                *.exe) for="Windows 10/11 portable";;
+                *.dmg) for="Mac with Apple chip (M1 or newer), macOS 12+";;
                 *.apk) for="Android 8+";;
                 *) for="";;
               esac

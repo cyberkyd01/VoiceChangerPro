@@ -10,7 +10,6 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cyberkyd01/VoiceChangerPro/releases/latest"><img alt="Download" src="https://img.shields.io/badge/Download-Windows%20installer-5865F2?style=for-the-badge&logo=windows" /></a>
   <img alt="Windows" src="https://img.shields.io/badge/Windows-10%20%7C%2011%20x64-0078D6?style=for-the-badge&logo=windows" />
   <img alt="macOS" src="https://img.shields.io/badge/macOS-Apple%20Silicon-333333?style=for-the-badge&logo=apple" />
   <img alt="Android" src="https://img.shields.io/badge/Android-8%2B-3DDC84?style=for-the-badge&logo=android" />
@@ -23,13 +22,21 @@
 
 ## Downloads
 
-All files are on the [latest release](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest) page, under **Assets**.
+Click the button for your device. Each link always downloads the newest version.
 
-| Device | File | What you get |
-|---|---|---|
-| **Windows** 10 / 11, 64-bit | `VoiceChangerPro-Setup-<version>.exe` (installer, recommended) or `VoiceChangerPro.exe` (portable) | System-wide: every app hears your changed voice through the free VB-CABLE virtual microphone |
-| **Mac** with an Apple chip (M1, M2, M3, M4…), macOS 12 or newer | `VoiceChangerPro-<version>-macOS-AppleSilicon.dmg` | System-wide: every app hears your changed voice through the free BlackHole virtual microphone |
-| **Android** 8 or newer | `VoiceChangerPro-<version>-android.apk` | Live voice change in your headphones, and record → change → share clips to WhatsApp, Telegram and other apps. Not system-wide, because Android does not let one app replace the microphone of another |
+<p align="center">
+  <a href="https://github.com/cyberkyd01/VoiceChangerPro/releases/latest/download/VoiceChangerPro-Windows-Setup.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows" /></a>
+  <a href="https://github.com/cyberkyd01/VoiceChangerPro/releases/latest/download/VoiceChangerPro-Mac-AppleSilicon.dmg"><img alt="Download for Mac" src="https://img.shields.io/badge/Download-Mac%20(Apple%20chip)-333333?style=for-the-badge&logo=apple" /></a>
+  <a href="https://github.com/cyberkyd01/VoiceChangerPro/releases/latest/download/VoiceChangerPro-Android.apk"><img alt="Download for Android" src="https://img.shields.io/badge/Download-Android-3DDC84?style=for-the-badge&logo=android" /></a>
+</p>
+
+| Device | Direct download | What you get | Guide |
+|---|---|---|---|
+| **Windows** 10 / 11, 64-bit | [Installer](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest/download/VoiceChangerPro-Windows-Setup.exe) (recommended) · [Portable .exe](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest/download/VoiceChangerPro-Windows-Portable.exe) | System-wide: every app hears your changed voice through the free VB-CABLE virtual microphone | [INSTALL.md](INSTALL.md) |
+| **Mac** with an Apple chip (M1, M2, M3, M4…), macOS 12 or newer | [Disk image (.dmg)](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest/download/VoiceChangerPro-Mac-AppleSilicon.dmg) | System-wide: every app hears your changed voice through the free BlackHole virtual microphone | [INSTALL-MAC.md](INSTALL-MAC.md) |
+| **Android** 8 or newer | [App (.apk)](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest/download/VoiceChangerPro-Android.apk) | Live voice change in your headphones, and record → change → share clips to WhatsApp, Telegram and other apps. Not system-wide, because Android does not let one app replace the microphone of another | [INSTALL-ANDROID.md](INSTALL-ANDROID.md) |
+
+Older versions and file checksums are on the [Releases page](https://github.com/cyberkyd01/VoiceChangerPro/releases).
 
 All three use the same voice engine and the same 78 built-in voices. Custom presets, the background
 audio bed and several microphones at once are Windows-only for now.
@@ -100,14 +107,14 @@ voice at any moment without interrupting the call.
 
 Step-by-step instructions, including VB-CABLE setup, building from source, updating, uninstalling and troubleshooting: **[INSTALL.md](INSTALL.md)**.
 
-**Installer (recommended)** — download `VoiceChangerPro-Setup-<version>.exe` from the
+**Installer (recommended)** — download `VoiceChangerPro-Windows-Setup.exe` from the
 [Releases page](https://github.com/cyberkyd01/VoiceChangerPro/releases) and run it. No administrator
 rights are needed for the app itself (per-user install). The wizard offers to download and install
 **VB-CABLE**, the free virtual audio cable that lets other applications hear your changed voice; that
 driver step asks for administrator confirmation and may need one reboot. The .NET runtime is bundled.
 Uninstall from Settings › Apps.
 
-**Portable** — `VoiceChangerPro.exe` from the release (or from `build.ps1 -Publish`) runs from any
+**Portable** — `VoiceChangerPro-Windows-Portable.exe` from the release (or from `build.ps1 -Publish`) runs from any
 folder; install VB-CABLE separately from <https://vb-audio.com/Cable/>.
 
 ## Quick start

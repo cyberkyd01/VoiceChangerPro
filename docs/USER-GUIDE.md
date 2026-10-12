@@ -51,7 +51,7 @@ installation, first-time setup, everyday use and every control in the applicatio
 - **VB-CABLE** (free virtual audio cable) so that other apps can receive the changed voice. The installer offers to set it up.
 
 ### Using the installer (recommended)
-1. Download `VoiceChangerPro-Setup-<version>.exe` from the
+1. Download `VoiceChangerPro-Windows-Setup.exe` from the
    [Releases page](https://github.com/cyberkyd01/VoiceChangerPro/releases).
 2. Run it. It installs for the current user by default and needs no administrator rights for the app itself.
 3. Keep **Download and install VB-CABLE** ticked (unless you already have a virtual cable). The VB-CABLE
@@ -60,7 +60,7 @@ installation, first-time setup, everyday use and every control in the applicatio
 4. Tick **Start Voice Changer Pro when setup finishes**.
 
 ### Portable use
-Copy `VoiceChangerPro.exe` anywhere and run it. Everything (including the .NET runtime) is inside the
+Download `VoiceChangerPro-Windows-Portable.exe`, copy it anywhere and run it. Everything (including the .NET runtime) is inside the
 file. Install VB-CABLE separately from <https://vb-audio.com/Cable/>.
 
 ### Uninstall

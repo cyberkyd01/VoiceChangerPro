@@ -21,8 +21,9 @@
 
     <ApplicationId>com.cyberkyd.voicechangerpro</ApplicationId>
     <ApplicationTitle>Voice Changer Pro</ApplicationTitle>
-    <ApplicationDisplayVersion>1.0.1</ApplicationDisplayVersion>
-    <ApplicationVersion>2</ApplicationVersion>
+    <!-- Follows <Version> in Directory.Build.props; versionCode = major*10000 + minor*100 + patch (1.1.0 → 10100). -->
+    <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
+    <ApplicationVersion>$([MSBuild]::Add($([MSBuild]::Add($([MSBuild]::Multiply($([System.Version]::Parse($(Version)).Major), 10000)), $([MSBuild]::Multiply($([System.Version]::Parse($(Version)).Minor), 100)))), $([System.Version]::Parse($(Version)).Build)))</ApplicationVersion>
 
     <!-- 64-bit phones and the x86_64 emulator. -->
     <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
