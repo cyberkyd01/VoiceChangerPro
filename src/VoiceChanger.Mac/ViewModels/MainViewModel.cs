@@ -295,7 +295,8 @@ public sealed partial class MainViewModel : ObservableObject
         if (SelectedCable == null) return;
         var current = CoreAudio.DefaultInputName;
         if (current == SelectedCable.Name) { UpdateCableStatus(); return; }
-        _originalDefaultInput ??= current;
+        // remember the real microphone to give back later (never a cable left over from a crash)
+        if (current != null && !DeviceClassifier.IsCable(current)) _originalDefaultInput ??= current;
         if (!CoreAudio.SetDefaultInput(SelectedCable.Name))
             Warning = $"macOS did not accept '{SelectedCable.Name}' as the microphone. Choose it in System Settings › Sound › Input.";
         UpdateCableStatus();

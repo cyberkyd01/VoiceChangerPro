@@ -4,6 +4,8 @@ This guide takes you from a clean Windows PC to a working voice changer that Dis
 games and any other app can use as a microphone. You can install the prebuilt release (installer
 or portable `.exe`) or build it from source.
 
+Using a Mac or an Android phone? See **[INSTALL-MAC.md](INSTALL-MAC.md)** or **[INSTALL-ANDROID.md](INSTALL-ANDROID.md)**.
+
 All commands are for **Windows PowerShell** (Start menu → type `PowerShell` → *Windows PowerShell*).
 Run them in a normal window unless a step says it needs administrator rights.
 

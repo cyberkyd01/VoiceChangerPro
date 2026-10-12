@@ -1,0 +1,105 @@
+name: Release
+
+# Builds every platform on its own runner and attaches the files to the GitHub release of the pushed
+# tag (for example v1.0.2):
+#   Windows  portable exe + Inno Setup installer   (windows-latest)
+#   macOS    Apple Silicon .dmg                     (macos-latest, arm64)
+#   Android  signed .apk                            (ubuntu-latest; needs the ANDROID_KEYSTORE_BASE64
+#                                                    and ANDROID_KEYSTORE_PASSWORD repository secrets)
+# A final job writes the SHA-256 of every file into the release notes.
+# Run it by hand with "publish: false" to only check that everything builds.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build, for example v1.0.2'
+        required: true
+      publish:
+        description: 'Upload the files to the release'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+env:
+  TAG: ${{ github.event.inputs.tag || github.ref_name }}
+  PUBLISH: ${{ github.event_name == 'push' || github.event.inputs.publish == 'true' }}
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create the release if needed
+        if: env.PUBLISH == 'true'
+        run: |
+          gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
+            gh release create "$TAG" -R "$GITHUB_REPOSITORY" --title "Voice Changer Pro by Cyberkyd ${TAG#v}" --notes "Building…"
+
+  windows:
+    needs: release
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: '${{ env.TAG }}' }
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '8.0.x' }
+      - name: Install Inno Setup
+        shell: pwsh
+        run: if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) { choco install innosetup -y --no-progress }
+      - name: Build, test, publish and package
+        shell: pwsh
+        run: .\build.ps1 -Publish -Installer
+      - name: Upload
+        if: env.PUBLISH == 'true'
+        shell: pwsh
+        run: |
+          $setup = (Get-ChildItem installer\Output -Filter "VoiceChangerPro-Setup-*.exe" | Select-Object -First 1).FullName
+          gh release upload $env:TAG $setup dist\VoiceChangerPro.exe --clobber -R $env:GITHUB_REPOSITORY
+
+  macos:
+    needs: release
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: '${{ env.TAG }}' }
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '10.0.x' }
+      - name: Build, self-test, sign and package
+        run: ./build-mac.sh
+      - name: Upload
+        if: env.PUBLISH == 'true'
+        run: gh release upload "$TAG" dist-mac/*.dmg --clobber -R "$GITHUB_REPOSITORY"
+
+  notes:
+    needs: [windows, macos]
+    if: always() && needs.windows.result == 'success' && needs.macos.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Write file hashes into the release notes
+        if: env.PUBLISH == 'true'
+        run: |
+          mkdir assets && cd assets
+          gh release download "$TAG" -R "$GITHUB_REPOSITORY"
+          {
+            echo "Downloads for Windows, Mac (Apple Silicon) and Android. Step-by-step guides:"
+            echo "[Windows](https://github.com/$GITHUB_REPOSITORY/blob/main/INSTALL.md) · [Mac](https://github.com/$GITHUB_REPOSITORY/blob/main/INSTALL-MAC.md) · [Android](https://github.com/$GITHUB_REPOSITORY/blob/main/INSTALL-ANDROID.md)"
+            echo
+            echo "| File | For | SHA-256 |"
+            echo "|---|---|---|"
+            for f in *; do
+              case "$f" in
+                *Setup*.exe) for="Windows installer (recommended)";;
+                *.exe) for="Windows portable";;
+                *.dmg) for="Mac with Apple chip";;
+                *.apk) for="Android 8+";;
+                *) for="";;
+              esac
+              echo "| \`$f\` | $for | \`$(sha256sum "$f" | cut -d' ' -f1 | tr a-f A-F)\` |"
+            done
+          } > ../notes.md
+          cat ../notes.md
+          gh release edit "$TAG" -R "$GITHUB_REPOSITORY" --notes-file ../notes.md
