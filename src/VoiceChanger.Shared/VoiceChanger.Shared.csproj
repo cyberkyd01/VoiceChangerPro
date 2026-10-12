@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Platform-neutral part of Voice Changer Pro, shared by the macOS and Android apps.
+    It compiles the same source files as VoiceChanger.Core (voice processing, presets, logging),
+    so every platform gets identical voices. Windows-only audio code (NAudio/WASAPI) is not included.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>VoiceChanger.Core</RootNamespace>
+    <AssemblyName>VoiceChanger.Shared</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\VoiceChanger.Core\Dsp\**\*.cs" Link="Dsp\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\VoiceChanger.Core\Presets\**\*.cs" Link="Presets\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\VoiceChanger.Core\Settings\**\*.cs" Link="Settings\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\VoiceChanger.Core\Logging\**\*.cs" Link="Logging\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>
