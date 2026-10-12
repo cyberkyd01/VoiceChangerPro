@@ -48,6 +48,7 @@ public sealed class VoiceEngine : IDisposable
     public string? VirtualOutputId => _virtualSink?.DeviceId;
     public string? VirtualOutputName => _virtualSink?.Name;
     public string? MonitorOutputId => _monitorSink?.DeviceId;
+    public string? MonitorOutputName => _monitorSink?.Name;
     public bool HasClip => _clipLen > 0;
     public bool IsRecordingClip => _clipRecordRemaining > 0;
     public double ClipSeconds => SampleRate > 0 ? _clipLen / (double)SampleRate : 0;

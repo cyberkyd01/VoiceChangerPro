@@ -53,11 +53,8 @@ public sealed partial class MicrophoneItemViewModel : ObservableObject
         set { Engine.EffectEnabled = value; OnPropertyChanged(); Refresh(); }
     }
 
-    public bool MonitorEnabled
-    {
-        get => Engine.Config.MonitorEnabled;
-        set { _manager.SetMonitoring(Engine, value); OnPropertyChanged(); Refresh(); }
-    }
+    /// <summary>True when this microphone is the one playing in the headphones ("Hear myself").</summary>
+    public bool MonitorEnabled => Engine.MonitorActive;
 
     public double MonitorVolume
     {
@@ -92,8 +89,8 @@ public sealed partial class MicrophoneItemViewModel : ObservableObject
         LatencyMs = Engine.EstimatedLatencyMs;
         FormatText = Engine.SampleRate > 0 ? $"{Engine.SampleRate / 1000.0:0.#} kHz · {Engine.InputChannels} ch" : "";
         RouteText = Engine.State != EngineState.Running ? "Not running"
-            : Engine.VirtualActive ? $"→ {Engine.VirtualOutputName}"
-            : "→ no virtual cable (apps will not hear this mic)";
+            : (Engine.VirtualActive ? $"→ {Engine.VirtualOutputName}" : "→ no virtual cable (apps will not hear this mic)")
+              + (Engine.MonitorActive ? $"  ·  🎧 {Engine.MonitorOutputName}" : "");
         ClipText = Engine.IsRecordingClip ? "Recording…" : Engine.HasClip ? $"{Engine.ClipSeconds:F1} s clip" : "No clip";
         OnPropertyChanged(nameof(Active));
         OnPropertyChanged(nameof(EffectEnabled));

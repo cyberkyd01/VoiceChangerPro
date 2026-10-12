@@ -49,6 +49,10 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] private AudioDeviceInfo? _selectedCableRender;
     [ObservableProperty] private AudioDeviceInfo? _selectedCableCapture;
     [ObservableProperty] private AudioDeviceInfo? _selectedMonitorDevice;
+    /// <summary>App-wide "Hear myself": the selected microphone plays in the headphones; nothing else ever does.</summary>
+    [ObservableProperty] private bool _hearMyself;
+    [ObservableProperty] private string _monitorStatusText = "";
+    [ObservableProperty] private bool _routingWarning;
     [ObservableProperty] private string _currentPresetName = "";
     [ObservableProperty] private bool _isModified;
     [ObservableProperty] private bool _canOverwritePreset;
@@ -183,6 +187,7 @@ public sealed partial class MainViewModel : ObservableObject
         foreach (var c in PresetCategories.All) Categories.Add(c);
 
         _masterEnabled = manager.MasterEnabled;
+        _hearMyself = Settings.HearMyself;
         _noiseReduction = Settings.NoiseReduction;
         _voiceIsolation = Settings.VoiceIsolation;
 
@@ -255,6 +260,15 @@ public sealed partial class MainViewModel : ObservableObject
         _observedProfile = value?.Profile;
         if (_observedProfile != null) _observedProfile.PropertyChanged += OnProfileChanged;
         UpdatePresetState();
+        // "Hear myself" follows the selected microphone, so the switch always describes what you hear.
+        _manager.SetHearMyself(HearMyself, value?.Engine);
+        UpdateStatus();
+    }
+
+    partial void OnHearMyselfChanged(bool value)
+    {
+        _manager.SetHearMyself(value, SelectedMicrophone?.Engine);
+        foreach (var m in Microphones) m.Refresh();
         UpdateStatus();
     }
 
@@ -284,6 +298,10 @@ public sealed partial class MainViewModel : ObservableObject
         int running = Microphones.Count(m => m.IsRunning);
         StatusText = Microphones.Count == 0 ? "No microphones detected"
             : $"{running} of {Microphones.Count} microphone(s) live" + (MasterEnabled ? "" : " · effects OFF (pass-through)");
+        var monitored = Microphones.Where(m => m.Engine.MonitorActive).ToList();
+        MonitorStatusText = monitored.Count == 0
+            ? "Off. Voice Changer Pro plays nothing in your headphones."
+            : string.Join("\n", monitored.Select(m => $"On: you hear '{m.Name}' in '{m.Engine.MonitorOutputName}'."));
     }
 
     private void UpdateMeters()
@@ -673,12 +691,35 @@ public sealed partial class MainViewModel : ObservableObject
 
         if (cable == null)
         {
+            RoutingWarning = false;
             CableOk = false;
             CableStatus = "No virtual cable";
             CableDetail = "Install VB-CABLE (free) so games, browsers and calling apps can use your changed voice.";
             DefaultMicIsCable = false;
             return;
         }
+        // Routing mistakes that put the changed voice (or all PC sound) in the wrong place.
+        bool wasWarning = RoutingWarning;
+        var defaultPlayback = _devices.GetDefaultDeviceId(NAudio.CoreAudioApi.DataFlow.Render, NAudio.CoreAudioApi.Role.Multimedia);
+        string? routingProblem = null;
+        if (!VirtualCableDetector.IsCable(cable.RenderInput))
+            routingProblem = $"Your changed voice is sent to '{cable.RenderInput.Name}', which is not a virtual cable. " +
+                             "If that is your headset or speakers, you hear the changed voice there and other apps hear nothing. " +
+                             "Choose 'CABLE Input' in Settings › Routing.";
+        else if (cable.RenderInput.Id == defaultPlayback)
+            routingProblem = $"'{cable.RenderInput.Name}' is the Windows default playback device, so all PC sound goes into the virtual microphone. " +
+                             "Make your headset the default playback device in Windows Sound settings.";
+        RoutingWarning = routingProblem != null;
+        if (routingProblem != null)
+        {
+            CableOk = false;
+            DefaultMicIsCable = false;
+            CableStatus = "Check audio routing";
+            CableDetail = routingProblem;
+            if (!wasWarning) ShowNotification("Check audio routing", routingProblem, isWarning: true);
+            return;
+        }
+
         var defaultMic = _devices.GetDefaultDeviceId(NAudio.CoreAudioApi.DataFlow.Capture, NAudio.CoreAudioApi.Role.Communications);
         DefaultMicIsCable = cable.CaptureOutput != null && defaultMic == cable.CaptureOutput.Id;
         CableOk = cable.CaptureOutput != null;

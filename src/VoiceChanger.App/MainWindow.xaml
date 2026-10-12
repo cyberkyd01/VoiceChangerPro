@@ -294,9 +294,10 @@
                             <ui:SymbolIcon Symbol="Headphones24" FontSize="18" Margin="0,0,8,0" />
                             <TextBlock Text="Live monitoring" Style="{StaticResource SectionHeaderText}" />
                         </StackPanel>
-                        <ui:ToggleSwitch Content="Hear myself (processed)" IsChecked="{Binding SelectedMicrophone.MonitorEnabled, Mode=TwoWay}" FontSize="12"
+                        <ui:ToggleSwitch Content="Hear myself (processed)" IsChecked="{Binding HearMyself, Mode=TwoWay}" FontSize="12"
                                          IsEnabled="{Binding SelectedMicrophone, Converter={StaticResource NotNullToBool}}"
-                                         ToolTip="Plays the processed voice on the selected output so you can tune in real time. Use headphones to avoid feedback." />
+                                         ToolTip="Plays the selected microphone's processed voice on the output below so you can tune in real time. Off = nothing plays in your headphones. Use headphones to avoid feedback." />
+                        <TextBlock Text="{Binding MonitorStatusText}" Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,6,0,0" />
                         <ComboBox ItemsSource="{Binding MonitorDevices}" SelectedItem="{Binding SelectedMonitorDevice, Mode=TwoWay}" DisplayMemberPath="Name" Margin="0,8,0,0" FontSize="12" ToolTip="Output device for monitoring (headphones recommended)" />
                         <Grid Margin="0,8,0,0">
                             <Grid.ColumnDefinitions>

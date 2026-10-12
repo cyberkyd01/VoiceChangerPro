@@ -230,6 +230,9 @@ public sealed class EngineManager : IDisposable
     public void Initialize()
     {
         MigrateSettings();
+        // Older versions kept a separate "Hear myself" flag per microphone. Only the app-wide switch counts now.
+        foreach (var mic in Settings.Microphones)
+            mic.MonitorEnabled = Settings.HearMyself && mic.DeviceId == Settings.MonitorMicrophoneId;
         RefreshDevices();
         DetectCable();
         Interference = InterferenceDetector.Scan();
@@ -354,7 +357,7 @@ public sealed class EngineManager : IDisposable
     public bool StartEngine(VoiceEngine e)
     {
         e.Config.Active = true;
-        bool ok = e.Start(ResolveVirtualOutput(e), ResolveMonitorOutput(), e.Config.MonitorEnabled);
+        bool ok = e.Start(ResolveVirtualOutput(e), ResolveMonitorOutput(), WantsMonitor(e));
         ReassignBackgroundIfNeeded();
         _settings.SaveSoon();
         EnginesChanged?.Invoke();
@@ -402,13 +405,38 @@ public sealed class EngineManager : IDisposable
     {
         Settings.MonitorDeviceId = deviceId;
         _settings.SaveSoon();
-        foreach (var e in Engines) e.SetMonitor(ResolveMonitorOutput(), e.Config.MonitorEnabled);
+        ApplyMonitoring();
     }
 
-    public void SetMonitoring(VoiceEngine e, bool enabled)
+    /// <summary>True only for the one microphone that "Hear myself" is following.</summary>
+    private bool WantsMonitor(VoiceEngine e)
+        => Settings.HearMyself && !string.IsNullOrEmpty(Settings.MonitorMicrophoneId) && e.DeviceId == Settings.MonitorMicrophoneId;
+
+    /// <summary>
+    /// The app-wide "Hear myself" switch. When enabled, <paramref name="microphone"/> (the selected one) plays on the
+    /// monitor device and every other microphone's monitoring is closed; when disabled, nothing plays there.
+    /// </summary>
+    public void SetHearMyself(bool enabled, VoiceEngine? microphone)
     {
-        e.SetMonitor(ResolveMonitorOutput(), enabled);
-        _settings.SaveSoon();
+        bool changed = Settings.HearMyself != enabled || Settings.MonitorMicrophoneId != microphone?.DeviceId;
+        Settings.HearMyself = enabled;
+        if (microphone != null) Settings.MonitorMicrophoneId = microphone.DeviceId;
+        ApplyMonitoring();
+        if (changed)
+        {
+            Log.Info("Manager", enabled ? $"Hear myself on for '{microphone?.DeviceName}'" : "Hear myself off");
+            _settings.SaveSoon();
+        }
+    }
+
+    private void ApplyMonitoring()
+    {
+        var device = ResolveMonitorOutput();
+        foreach (var e in Engines)
+        {
+            bool want = WantsMonitor(e);
+            e.SetMonitor(want ? device : null, want);
+        }
     }
 
     public void ApplyPreset(VoiceEngine e, VoicePreset preset)
@@ -494,7 +522,7 @@ public sealed class EngineManager : IDisposable
         }
         foreach (var e in toStart)
         {
-            if (e.Start(ResolveVirtualOutput(e), ResolveMonitorOutput(), e.Config.MonitorEnabled))
+            if (e.Start(ResolveVirtualOutput(e), ResolveMonitorOutput(), WantsMonitor(e)))
                 Log.Info("Manager", $"Auto-started '{e.DeviceName}'");
         }
 
@@ -503,7 +531,9 @@ public sealed class EngineManager : IDisposable
         {
             var want = ResolveVirtualOutput(e);
             if (e.VirtualOutputId != want) e.SetVirtualOutput(want);
-            if (e.Config.MonitorEnabled && !e.MonitorActive) e.SetMonitor(ResolveMonitorOutput(), true);
+            bool monitor = WantsMonitor(e);
+            if (monitor && !e.MonitorActive) e.SetMonitor(ResolveMonitorOutput(), true);
+            else if (!monitor && e.MonitorActive) e.SetMonitor(null, false);
         }
 
         if (previousCable != ActiveCable?.RenderInput.Id && ActiveCable == null)

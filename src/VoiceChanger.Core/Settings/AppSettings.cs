@@ -21,6 +21,7 @@ public sealed class MicrophoneConfig
     public VoiceProfile Profile { get; set; } = new();
     /// <summary>Render endpoint that receives the processed audio (virtual cable input). Null = use the global default.</summary>
     public string? VirtualOutputDeviceId { get; set; }
+    /// <summary>Derived from <see cref="AppSettings.HearMyself"/>; kept for older settings files.</summary>
     public bool MonitorEnabled { get; set; }
     public float MonitorVolume { get; set; } = 0.8f;
 }
@@ -39,6 +40,15 @@ public sealed class AppSettings
 
     /// <summary>Render endpoint used for live monitoring (headphones). Null = system default.</summary>
     public string? MonitorDeviceId { get; set; }
+
+    /// <summary>
+    /// "Hear myself": one app-wide switch. When on, only <see cref="MonitorMicrophoneId"/> (the microphone
+    /// selected in the window) plays on the monitor device; every other microphone is silent there.
+    /// Replaces the old per-microphone <see cref="MicrophoneConfig.MonitorEnabled"/> flags, which could keep a
+    /// microphone playing in the headphones while the switch shown for another microphone said "off".
+    /// </summary>
+    public bool HearMyself { get; set; }
+    public string? MonitorMicrophoneId { get; set; }
 
     /// <summary>Automatically make the virtual cable the Windows default microphone while running.</summary>
     public bool AutoSetDefaultMicrophone { get; set; } = true;

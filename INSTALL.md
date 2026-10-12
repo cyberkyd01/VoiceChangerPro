@@ -14,7 +14,7 @@ Run them in a normal window unless a step says it needs administrator rights.
 | | |
 |---|---|
 | Supported Windows | Windows 10 version 1809 (build 17763) or newer, or Windows 11, 64-bit (x64) |
-| Latest release | [`v1.1.0`](https://github.com/cyberkyd01/VoiceChangerPro/releases/tag/v1.1.0): `VoiceChangerPro-Windows-Setup.exe` (installer, 51 MB) and `VoiceChangerPro-Windows-Portable.exe` (portable, 170 MB) |
+| Latest release | [`v1.1.1`](https://github.com/cyberkyd01/VoiceChangerPro/releases/tag/v1.1.1): `VoiceChangerPro-Windows-Setup.exe` (installer, 51 MB) and `VoiceChangerPro-Windows-Portable.exe` (portable, 170 MB) |
 | Direct downloads | [Installer](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest/download/VoiceChangerPro-Windows-Setup.exe) · [Portable](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest/download/VoiceChangerPro-Windows-Portable.exe) |
 | .NET | Bundled. Users install nothing extra. Building from source needs the **.NET 8 SDK** (the project targets `net8.0-windows`) |
 | Virtual audio cable | **VB-CABLE** by VB-Audio (free donationware). It is a kernel audio driver, so installing it needs **administrator rights** and a **reboot** |
@@ -100,7 +100,7 @@ Choose **one** of these options.
 
    ```powershell
    $setup = "$env:USERPROFILE\Downloads\VoiceChangerPro-Windows-Setup.exe"
-   curl.exe -L -o $setup https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.1.0/VoiceChangerPro-Windows-Setup.exe
+   curl.exe -L -o $setup https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.1.1/VoiceChangerPro-Windows-Setup.exe
    (Get-FileHash $setup -Algorithm SHA256).Hash -eq '898C95401BC0E540DB17DD8C06F0C18671D8D8A9D8078C8329B93733A7DB12B8'
    ```
 
@@ -135,7 +135,7 @@ writes nothing outside your user profile. Install VB-CABLE separately ([step 1](
 ```powershell
 $dir = "$env:USERPROFILE\VoiceChangerPro-Portable"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
-curl.exe -L -o "$dir\VoiceChangerPro.exe" https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.1.0/VoiceChangerPro-Windows-Portable.exe
+curl.exe -L -o "$dir\VoiceChangerPro.exe" https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.1.1/VoiceChangerPro-Windows-Portable.exe
 (Get-FileHash "$dir\VoiceChangerPro.exe" -Algorithm SHA256).Hash -eq 'AEAB593AE6255519D1CD69DCBD71CF6FECDFF992CA310512E2F66188EB95D356'
 ```
 
@@ -293,7 +293,7 @@ back to Windows cleanly.
 (Get-Item "$env:LOCALAPPDATA\Programs\Voice Changer Pro by Cyberkyd\VoiceChangerPro.exe").VersionInfo.FileVersion
 ```
 
-The first line shows the latest release, for example `v1.1.0`. The second shows your installed version, for example `1.1.0.0`, for an *Install for me only* install.
+The first line shows the latest release, for example `v1.1.1`. The second shows your installed version, for example `1.1.1.0`, for an *Install for me only* install.
 
 - **Installer:** download the new `VoiceChangerPro-Windows-Setup.exe` from the [Releases page](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest) and run it. It upgrades the existing installation in place, in the same folder, with the same Start menu entry. Compare its SHA-256 with the `sha256:` digest shown next to the file on the release page:
 
@@ -371,6 +371,7 @@ These steps remove what Voice Changer Pro installed. Each one is optional beyond
 | Other apps hear your **real** voice | They aren't using CABLE Output, or effects are off | Select *CABLE Output* in that app (step 4) or click **Set as Windows default mic**, then restart that app. Check the **Voice effects** master switch and the mic's **Effect** switch |
 | **Echo:** the other person hears themselves | Your call app's *speaker/output* (or the Windows default playback device) is set to *CABLE Input* | Set the output to your headphones/speakers. Run `control mmsys.cpl`; on the **Playback** tab, *CABLE Input* must not be the default device |
 | You hear your **changed voice in your earphones**, but other apps don't get it | Version 1.0.0 picked a device such as *Speakers (NVIDIA Broadcast)*, *SteelSeries Sonar* or a *Virtual Surround* headset as the cable. This happens when VB-CABLE is missing or Windows hasn't rebooted since installing it | Update to the latest release. Install VB-CABLE and reboot. In *Settings › Routing* the cable's playback endpoint must be **CABLE Input** |
+| **Tones, breathing or other strange sounds in your headset** while *Hear myself* is off | Before version 1.1.1, *Hear myself* was saved per microphone, so a microphone you were not looking at could keep playing processed room noise into your headset. Or the cable output is set to your headset | Update to the latest release: *Hear myself* is now one switch and the line under it says exactly what plays in your headphones. If a **Check audio routing** warning appears, follow it. To test whether the sound comes from the app at all, exit it from the tray icon. If the sound continues, check *Listen to this device* (next row) and turn off microphone sidetone: `control mmsys.cpl` → **Playback** → your headset → Properties → **Levels** → mute *Microphone* |
 | You hear yourself twice, even with monitoring off | *Listen to this device* is enabled on CABLE Output | `control mmsys.cpl` → **Recording** → *CABLE Output* → Properties → **Listen** → untick *Listen to this device* |
 | **Feedback** or howling | Monitoring plays through speakers that your mic picks up | Use headphones, lower the monitor volume, or switch off *Hear myself* |
 | **Latency:** your own voice sounds delayed in your ears | The monitoring path, about 150 ms with the default 20 ms buffers (≈ 80 ms of that is the voice processing itself) | Normal. In *Settings › Audio engine* set **Buffer size** to 10 ms (≈ 110 ms total on a fast PC). Avoid Bluetooth mics, which add their own delay. Or turn *Hear myself* off once the voice is set up. The other party isn't affected by your monitoring |

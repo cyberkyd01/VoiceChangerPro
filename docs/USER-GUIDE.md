@@ -168,7 +168,10 @@ Select a microphone to edit it; the editor and meters follow the selection.
 ## 7. Live monitoring and the test clip
 
 **Live monitoring**
-- *Hear myself (processed)*: plays the processed voice (and the background audio) to the chosen output.
+- *Hear myself (processed)*: plays the processed voice (and the background audio) of the **selected**
+  microphone to the chosen output. It is one switch for the whole app: when it is off, Voice Changer Pro
+  plays nothing in your headphones, whichever microphone is selected. The line under the switch says
+  what you are hearing, and the microphone list shows 🎧 next to the microphone being monitored.
 - *Output device*: your headphones or speakers. Virtual cables are excluded from this list on purpose.
 - *Volume*: monitoring level only. It does not change what other apps receive.
 
