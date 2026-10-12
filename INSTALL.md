@@ -12,7 +12,7 @@ Run them in a normal window unless a step says it needs administrator rights.
 | | |
 |---|---|
 | Supported Windows | Windows 10 version 1809 (build 17763) or newer, or Windows 11, 64-bit (x64) |
-| Latest release | [`v1.0.0`](https://github.com/cyberkyd01/VoiceChangerPro/releases/tag/v1.0.0): `VoiceChangerPro-Setup-1.0.0.exe` (installer, 51 MB) and `VoiceChangerPro.exe` (portable, 170 MB) |
+| Latest release | [`v1.0.1`](https://github.com/cyberkyd01/VoiceChangerPro/releases/tag/v1.0.1): `VoiceChangerPro-Setup-1.0.1.exe` (installer, 51 MB) and `VoiceChangerPro.exe` (portable, 170 MB) |
 | .NET | Bundled. Users install nothing extra. Building from source needs the **.NET 8 SDK** (the project targets `net8.0-windows`) |
 | Virtual audio cable | **VB-CABLE** by VB-Audio (free donationware). It is a kernel audio driver, so installing it needs **administrator rights** and a **reboot** |
 | Install folder (installer) | Default, for you only: `%LocalAppData%\Programs\Voice Changer Pro by Cyberkyd` (no admin). Optional, for all users: `C:\Program Files\Voice Changer Pro by Cyberkyd` (needs admin) |
@@ -96,8 +96,8 @@ Choose **one** of these options.
    [Releases page](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest) in your browser.
 
    ```powershell
-   $setup = "$env:USERPROFILE\Downloads\VoiceChangerPro-Setup-1.0.0.exe"
-   curl.exe -L -o $setup https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.0.0/VoiceChangerPro-Setup-1.0.0.exe
+   $setup = "$env:USERPROFILE\Downloads\VoiceChangerPro-Setup-1.0.1.exe"
+   curl.exe -L -o $setup https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.0.1/VoiceChangerPro-Setup-1.0.1.exe
    (Get-FileHash $setup -Algorithm SHA256).Hash -eq '02E40A9C68897DBE5714BCA73BBB47E3A1CA0EBC175FEFA6F5ADCA42A7D69432'
    ```
 
@@ -106,7 +106,7 @@ Choose **one** of these options.
 2. Start the installer:
 
    ```powershell
-   Start-Process "$env:USERPROFILE\Downloads\VoiceChangerPro-Setup-1.0.0.exe"
+   Start-Process "$env:USERPROFILE\Downloads\VoiceChangerPro-Setup-1.0.1.exe"
    ```
 
    - **SmartScreen:** if Windows shows *Windows protected your PC*, click **More info** and then **Run anyway**. The installer isn't code-signed, which is why Windows can't name the publisher. You checked the file's hash above. This warning mostly appears for files downloaded in a browser.
@@ -132,7 +132,7 @@ writes nothing outside your user profile. Install VB-CABLE separately ([step 1](
 ```powershell
 $dir = "$env:USERPROFILE\VoiceChangerPro-Portable"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
-curl.exe -L -o "$dir\VoiceChangerPro.exe" https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.0.0/VoiceChangerPro.exe
+curl.exe -L -o "$dir\VoiceChangerPro.exe" https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.0.1/VoiceChangerPro.exe
 (Get-FileHash "$dir\VoiceChangerPro.exe" -Algorithm SHA256).Hash -eq '26311E4E93E04A9BDBDCCD0C6DF1AED058F14EC9399FADA7C62FDBD4E2FE41B6'
 ```
 
@@ -222,7 +222,7 @@ test stops the build. These are the parameters it accepts:
 |---|---|---|
 | `.\build.ps1` | Restore, build (Release), run unit tests | `src\VoiceChanger.App\bin\Release\net8.0-windows\` |
 | `.\build.ps1 -Publish` | The above, plus a self-contained single-file x64 build that needs no .NET on the target PC | `dist\VoiceChangerPro.exe` (+ `dist\README.md`) |
-| `.\build.ps1 -Publish -Installer` | The above, plus the Windows installer (needs Inno Setup 6). `-Installer` needs `dist\VoiceChangerPro.exe`, so pass `-Publish` with it | `installer\Output\VoiceChangerPro-Setup-1.0.0.exe` |
+| `.\build.ps1 -Publish -Installer` | The above, plus the Windows installer (needs Inno Setup 6). `-Installer` needs `dist\VoiceChangerPro.exe`, so pass `-Publish` with it | `installer\Output\VoiceChangerPro-Setup-1.0.1.exe` |
 | `.\build.ps1 -Integration` | Also runs the real-device tests (sets `VCP_INTEGRATION=1`, opens your default mic and speakers) | — |
 | `-Configuration Debug` | Builds Debug instead of the default `Release`. You can combine it with any of the above. The script's help text says Debug, but the actual default is Release | — |
 
@@ -243,7 +243,7 @@ and finally `Done.`
 
 You can also double-click **`Start Voice Changer Pro.cmd`** in the repository folder. It launches
 `dist\VoiceChangerPro.exe`, so run `-Publish` first. If you built the installer, run
-`installer\Output\VoiceChangerPro-Setup-1.0.0.exe` and follow [Option A](#option-a-installer-recommended) from the *Start the installer* part.
+`installer\Output\VoiceChangerPro-Setup-1.0.1.exe` and follow [Option A](#option-a-installer-recommended) from the *Start the installer* part.
 
 Install VB-CABLE as in [step 1](#1-install-the-virtual-audio-cable-vb-cable) (manual option) if you haven't yet.
 
@@ -290,7 +290,7 @@ back to Windows cleanly.
 (Get-Item "$env:LOCALAPPDATA\Programs\Voice Changer Pro by Cyberkyd\VoiceChangerPro.exe").VersionInfo.FileVersion
 ```
 
-The first line shows the latest release, for example `v1.0.0`. The second shows your installed version, for example `1.0.0.0`, for an *Install for me only* install.
+The first line shows the latest release, for example `v1.0.1`. The second shows your installed version, for example `1.0.1.0`, for an *Install for me only* install.
 
 - **Installer:** download the new `VoiceChangerPro-Setup-<version>.exe` from the [Releases page](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest) and run it. It upgrades the existing installation in place, in the same folder, with the same Start menu entry. Compare its SHA-256 with the `sha256:` digest shown next to the file on the release page:
 

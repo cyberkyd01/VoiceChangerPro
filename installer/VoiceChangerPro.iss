@@ -4,7 +4,7 @@
 ; Output: installer\Output\VoiceChangerPro-Setup-<version>.exe
 
 #define MyAppName "Voice Changer Pro by Cyberkyd"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "Cyberkyd"
 #define MyAppURL "https://github.com/cyberkyd01/VoiceChangerPro"
 #define MyAppExeName "VoiceChangerPro.exe"
