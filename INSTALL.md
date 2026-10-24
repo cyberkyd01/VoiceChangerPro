@@ -101,7 +101,7 @@ Choose **one** of these options.
    ```powershell
    $setup = "$env:USERPROFILE\Downloads\VoiceChangerPro-Windows-Setup.exe"
    curl.exe -L -o $setup https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.1.2/VoiceChangerPro-Windows-Setup.exe
-   (Get-FileHash $setup -Algorithm SHA256).Hash -eq 'A97F861D4A5F4DB1EA5DD7E1A5F821E54CB0A99AB52E5B14BE6467BA0AB5B53D'
+   (Get-FileHash $setup -Algorithm SHA256).Hash -eq '073DEEE4AFD0E9F6E4540CA823BEE63A820DEFAF29B850E3B9327169EB7D7AC7'
    ```
 
    The last line must print `True`. If it prints `False`, delete the file and download it again.
@@ -136,7 +136,7 @@ writes nothing outside your user profile. Install VB-CABLE separately ([step 1](
 $dir = "$env:USERPROFILE\VoiceChangerPro-Portable"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
 curl.exe -L -o "$dir\VoiceChangerPro.exe" https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.1.2/VoiceChangerPro-Windows-Portable.exe
-(Get-FileHash "$dir\VoiceChangerPro.exe" -Algorithm SHA256).Hash -eq 'F81284CFFBEF11AF242E7931AD3F99FFB9CF78613FC29696BC7DCEF483D66C35'
+(Get-FileHash "$dir\VoiceChangerPro.exe" -Algorithm SHA256).Hash -eq '0D52D8D88B9A385A5F734CBBD6335FD654BCC8919C673D98A600EDA614B897AC'
 ```
 
 The last line must print `True`. Start it with:
