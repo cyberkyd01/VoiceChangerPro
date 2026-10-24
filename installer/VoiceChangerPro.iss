@@ -4,7 +4,7 @@
 ; Output: installer\Output\VoiceChangerPro-Setup-<version>.exe
 
 #define MyAppName "Voice Changer Pro by Cyberkyd"
-#define MyAppVersion "1.1.1"
+#define MyAppVersion "1.1.2"
 #define MyAppPublisher "Cyberkyd"
 #define MyAppURL "https://github.com/cyberkyd01/VoiceChangerPro"
 #define MyAppExeName "VoiceChangerPro.exe"
@@ -76,16 +76,23 @@ var
 function VbCableInstalled: Boolean;
 var
   Keys: TArrayOfString;
-  I: Integer;
+  I, R: Integer;
   Name: String;
   Root: Integer;
   Base: String;
 begin
   Result := False;
   Base := 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall';
-  for Root := 0 to 1 do
+  { separate index variable: assigning HKLM/HKCU to the loop counter itself made this loop never end,
+    which froze the wizard when Next was clicked on the page before "Select Additional Tasks" }
+  for R := 0 to 2 do
   begin
-    if Root = 0 then Root := HKLM else Root := HKCU;
+    case R of
+      0: Root := HKLM64;
+      1: Root := HKLM32;
+    else
+      Root := HKCU;
+    end;
     if RegGetSubkeyNames(Root, Base, Keys) then
       for I := 0 to GetArrayLength(Keys) - 1 do
         if RegQueryStringValue(Root, Base + '\' + Keys[I], 'DisplayName', Name) then

@@ -14,7 +14,7 @@ Run them in a normal window unless a step says it needs administrator rights.
 | | |
 |---|---|
 | Supported Windows | Windows 10 version 1809 (build 17763) or newer, or Windows 11, 64-bit (x64) |
-| Latest release | [`v1.1.1`](https://github.com/cyberkyd01/VoiceChangerPro/releases/tag/v1.1.1): `VoiceChangerPro-Windows-Setup.exe` (installer, 51 MB) and `VoiceChangerPro-Windows-Portable.exe` (portable, 170 MB) |
+| Latest release | [`v1.1.2`](https://github.com/cyberkyd01/VoiceChangerPro/releases/tag/v1.1.2): `VoiceChangerPro-Windows-Setup.exe` (installer, 51 MB) and `VoiceChangerPro-Windows-Portable.exe` (portable, 170 MB) |
 | Direct downloads | [Installer](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest/download/VoiceChangerPro-Windows-Setup.exe) · [Portable](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest/download/VoiceChangerPro-Windows-Portable.exe) |
 | .NET | Bundled. Users install nothing extra. Building from source needs the **.NET 8 SDK** (the project targets `net8.0-windows`) |
 | Virtual audio cable | **VB-CABLE** by VB-Audio (free donationware). It is a kernel audio driver, so installing it needs **administrator rights** and a **reboot** |
@@ -100,7 +100,7 @@ Choose **one** of these options.
 
    ```powershell
    $setup = "$env:USERPROFILE\Downloads\VoiceChangerPro-Windows-Setup.exe"
-   curl.exe -L -o $setup https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.1.1/VoiceChangerPro-Windows-Setup.exe
+   curl.exe -L -o $setup https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.1.2/VoiceChangerPro-Windows-Setup.exe
    (Get-FileHash $setup -Algorithm SHA256).Hash -eq 'A97F861D4A5F4DB1EA5DD7E1A5F821E54CB0A99AB52E5B14BE6467BA0AB5B53D'
    ```
 
@@ -135,7 +135,7 @@ writes nothing outside your user profile. Install VB-CABLE separately ([step 1](
 ```powershell
 $dir = "$env:USERPROFILE\VoiceChangerPro-Portable"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
-curl.exe -L -o "$dir\VoiceChangerPro.exe" https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.1.1/VoiceChangerPro-Windows-Portable.exe
+curl.exe -L -o "$dir\VoiceChangerPro.exe" https://github.com/cyberkyd01/VoiceChangerPro/releases/download/v1.1.2/VoiceChangerPro-Windows-Portable.exe
 (Get-FileHash "$dir\VoiceChangerPro.exe" -Algorithm SHA256).Hash -eq 'F81284CFFBEF11AF242E7931AD3F99FFB9CF78613FC29696BC7DCEF483D66C35'
 ```
 
@@ -225,7 +225,7 @@ test stops the build. These are the parameters it accepts:
 |---|---|---|
 | `.\build.ps1` | Restore, build (Release), run unit tests | `src\VoiceChanger.App\bin\Release\net8.0-windows\` |
 | `.\build.ps1 -Publish` | The above, plus a self-contained single-file x64 build that needs no .NET on the target PC | `dist\VoiceChangerPro.exe` (+ `dist\README.md`) |
-| `.\build.ps1 -Publish -Installer` | The above, plus the Windows installer (needs Inno Setup 6). `-Installer` needs `dist\VoiceChangerPro.exe`, so pass `-Publish` with it | `installer\Output\VoiceChangerPro-Setup-1.1.1.exe` |
+| `.\build.ps1 -Publish -Installer` | The above, plus the Windows installer (needs Inno Setup 6). `-Installer` needs `dist\VoiceChangerPro.exe`, so pass `-Publish` with it | `installer\Output\VoiceChangerPro-Setup-1.1.2.exe` |
 | `.\build.ps1 -Integration` | Also runs the real-device tests (sets `VCP_INTEGRATION=1`, opens your default mic and speakers) | — |
 | `-Configuration Debug` | Builds Debug instead of the default `Release`. You can combine it with any of the above. The script's help text says Debug, but the actual default is Release | — |
 
@@ -246,7 +246,7 @@ and finally `Done.`
 
 You can also double-click **`Start Voice Changer Pro.cmd`** in the repository folder. It launches
 `dist\VoiceChangerPro.exe`, so run `-Publish` first. If you built the installer, run
-`installer\Output\VoiceChangerPro-Setup-1.1.1.exe` and follow [Option A](#option-a-installer-recommended) from the *Start the installer* part.
+`installer\Output\VoiceChangerPro-Setup-1.1.2.exe` and follow [Option A](#option-a-installer-recommended) from the *Start the installer* part.
 
 Install VB-CABLE as in [step 1](#1-install-the-virtual-audio-cable-vb-cable) (manual option) if you haven't yet.
 
@@ -293,7 +293,7 @@ back to Windows cleanly.
 (Get-Item "$env:LOCALAPPDATA\Programs\Voice Changer Pro by Cyberkyd\VoiceChangerPro.exe").VersionInfo.FileVersion
 ```
 
-The first line shows the latest release, for example `v1.1.1`. The second shows your installed version, for example `1.1.1.0`, for an *Install for me only* install.
+The first line shows the latest release, for example `v1.1.2`. The second shows your installed version, for example `1.1.2.0`, for an *Install for me only* install.
 
 - **Installer:** download the new `VoiceChangerPro-Windows-Setup.exe` from the [Releases page](https://github.com/cyberkyd01/VoiceChangerPro/releases/latest) and run it. It upgrades the existing installation in place, in the same folder, with the same Start menu entry. Compare its SHA-256 with the `sha256:` digest shown next to the file on the release page:
 
@@ -365,6 +365,7 @@ These steps remove what Voice Changer Pro installed. Each one is optional beyond
 |---|---|---|
 | *Windows protected your PC* when starting the installer or `.exe` | The binaries aren't code-signed | Check the SHA-256 as shown in step 2, then **More info → Run anyway** |
 | Status pill says **No virtual cable** | VB-CABLE isn't installed, or Windows hasn't rebooted since | Do [step 1](#1-install-the-virtual-audio-cable-vb-cable), reboot, press **Refresh**. For another cable product, pick its endpoints in *Settings › Routing* |
+| Installer freezes when you click **Next** before *Select Additional Tasks* | A bug in installers before 1.1.2 made the VB-CABLE check loop forever on PCs without VB-CABLE | Close the installer (Task Manager if needed) and download the latest installer. Or install VB-CABLE first ([step 1](#1-install-the-virtual-audio-cable-vb-cable)), then the old installer works too |
 | Installer says *VB-CABLE could not be downloaded automatically* | The vendor download was unreachable | Install it manually ([step 1](#1-install-the-virtual-audio-cable-vb-cable)) and reboot |
 | **No audio:** IN meter never moves, or *Mic silent — how to fix* appears | Another voice changer's driver (NCH Voxal, MorphVOX/Screaming Bee, AV Voice Changer) is passing silence, or Windows blocks microphone access | Follow the *Mic silent — how to fix* button: usually uninstall that product, restart Windows, then **Refresh**. Also check `Start-Process ms-settings:privacy-microphone`: *Microphone access* and *Let desktop apps access your microphone* must be **On**. Check the headset's mute switch |
 | **No audio in the other app:** they hear nothing | That app uses *CABLE Output*, but Voice Changer Pro isn't running, or the mic is switched off in the app | Start Voice Changer Pro and make sure the mic is *Active*. When the app is closed, CABLE Output is silent. If you picked CABLE Output by hand in an app, switch that app back to your real mic when you stop using the voice changer |
